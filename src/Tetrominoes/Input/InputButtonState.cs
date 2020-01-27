@@ -1,5 +1,3 @@
-#nullable disable
-
 namespace Tetrominoes.Input
 {
     public enum InputButtonState

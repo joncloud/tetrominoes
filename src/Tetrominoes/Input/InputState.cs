@@ -1,7 +1,3 @@
-#nullable disable
-
-using Microsoft.Xna.Framework;
-
 namespace Tetrominoes.Input
 {
     public struct InputState
