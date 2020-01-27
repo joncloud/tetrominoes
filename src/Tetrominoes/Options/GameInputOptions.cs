@@ -1,42 +1,41 @@
-#nullable disable
-
 using Nett;
+using System;
 
 namespace Tetrominoes.Options
 {
     public class GameInputOptions
     {
-        public static GameInputOptions CreateDefault() =>
-            new GameInputOptions
-            {
-                Keyboard = GameInputKeyboardOptions.CreateDefault()
-            };
+        public GameInputOptions()
+        {
+            Keyboard = new GameInputKeyboardOptions();
+            GamePad = new GameInputGamePadOptions();
+        }
+
+        public GameInputOptions(
+            GameInputKeyboardOptions keyboard,
+            GameInputGamePadOptions gamePad
+        )
+        {
+            Keyboard = keyboard ?? throw new ArgumentNullException(nameof(keyboard));
+            GamePad = gamePad ?? throw new ArgumentNullException(nameof(gamePad));
+        }
 
         [TomlMember(Key = "keyboard")]
-        public GameInputKeyboardOptions Keyboard { get; set; }
+        public GameInputKeyboardOptions Keyboard { get; }
 
         [TomlMember(Key = "gamepad")]
-        public GameInputGamePadOptions GamePad { get; set; }
+        public GameInputGamePadOptions GamePad { get; }
 
-        internal void ValidateConstraints()
+        public static GameInputOptions FromToml(TomlTable table)
         {
-            if (Keyboard == null)
-            {
-                Keyboard = GameInputKeyboardOptions.CreateDefault();
-            }
-            else
-            {
-                Keyboard.ValidateConstraints();
-            }
+            if (table == default) throw new ArgumentNullException(nameof(table));
 
-            if (GamePad == null)
-            {
-                GamePad = GameInputGamePadOptions.CreateDefault();
-            }
-            else
-            {
-                GamePad.ValidateConstraints();
-            }
+            var options = new GameInputOptions(
+                GameInputKeyboardOptions.FromToml(table),
+                GameInputGamePadOptions.FromToml(table)
+            );
+
+            return options;
         }
     }
 }

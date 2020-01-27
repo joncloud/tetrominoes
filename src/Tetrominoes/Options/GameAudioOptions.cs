@@ -1,18 +1,16 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using Nett;
+using System;
 
 namespace Tetrominoes.Options
 {
     public class GameAudioOptions
     {
-        public static GameAudioOptions CreateDefault() =>
-            new GameAudioOptions
-            {
-                MusicVolume = 15,
-                SoundVolume = 75,
-            };
+        public GameAudioOptions()
+        {
+            MusicVolume = 15;
+            SoundVolume = 75;
+        }
 
         int _musicVolume;
 
@@ -46,8 +44,25 @@ namespace Tetrominoes.Options
         [TomlIgnore]
         public float SoundVolumePercentage { get; private set; }
 
-        internal void ValidateConstraints()
+        public static GameAudioOptions FromToml(TomlTable table)
         {
+            if (table == default) throw new ArgumentNullException(nameof(table));
+
+            var options = new GameAudioOptions();
+
+            if (table.TryGetTable("audio", out var graphics))
+            {
+                if (graphics.TryGetValue("music_volume", out int width))
+                {
+                    options.MusicVolume = width;
+                }
+                if (graphics.TryGetValue("sound_volume", out int height))
+                {
+                    options.SoundVolume = height;
+                }
+            }
+
+            return options;
         }
     }
 }

@@ -1,27 +1,29 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using Nett;
+using System;
 
 namespace Tetrominoes.Options
 {
     public class GameInputGamePadOptions
     {
-        public static GameInputGamePadOptions CreateDefault() =>
-            new GameInputGamePadOptions
-            {
-                Enabled = true,
-                PlayerIndex = PlayerIndex.One,
-                Up = GamePadButtonTypes.DPadUp,
-                Down = GamePadButtonTypes.DPadDown,
-                Left = GamePadButtonTypes.DPadLeft,
-                Right = GamePadButtonTypes.DPadRight,
-                RotateLeft = GamePadButtonTypes.ButtonsA,
-                RotateRight = GamePadButtonTypes.ButtonsB,
-                Drop = GamePadButtonTypes.ButtonsLeftShoulder,
-                Swap = GamePadButtonTypes.ButtonsRightShoulder,
-                Pause = GamePadButtonTypes.ButtonsStart
-            };
+        // CS8618 is disabled, because the *Map properties are
+        // initialized through the property setters.
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public GameInputGamePadOptions()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        {
+            Enabled = true;
+            PlayerIndex = PlayerIndex.One;
+            Up = GamePadButtonTypes.DPadUp;
+            Down = GamePadButtonTypes.DPadDown;
+            Left = GamePadButtonTypes.DPadLeft;
+            Right = GamePadButtonTypes.DPadRight;
+            RotateLeft = GamePadButtonTypes.ButtonsA;
+            RotateRight = GamePadButtonTypes.ButtonsB;
+            Drop = GamePadButtonTypes.ButtonsLeftShoulder;
+            Swap = GamePadButtonTypes.ButtonsRightShoulder;
+            Pause = GamePadButtonTypes.ButtonsStart;
+        }
 
         [TomlMember(Key = "enabled")]
         public bool Enabled { get; set; }
@@ -40,6 +42,7 @@ namespace Tetrominoes.Options
                 UpMap = GamePadButtonMaps.GetMapFor(value);
             }
         }
+
         [TomlIgnore]
         public GetButtonState UpMap { get; private set; }
 
@@ -155,18 +158,39 @@ namespace Tetrominoes.Options
         [TomlIgnore]
         public GetButtonState PauseMap { get; private set; }
 
-        internal void ValidateConstraints()
+        public static GameInputGamePadOptions FromToml(TomlTable table)
         {
-            PlayerIndex = EnumHelper<PlayerIndex>.IfDefined(PlayerIndex, PlayerIndex.One);
-            Up = EnumHelper<GamePadButtonTypes>.IfDefined(Up, GamePadButtonTypes.DPadUp);
-            Down = EnumHelper<GamePadButtonTypes>.IfDefined(Down, GamePadButtonTypes.DPadDown);
-            Left = EnumHelper<GamePadButtonTypes>.IfDefined(Left, GamePadButtonTypes.DPadLeft);
-            Right = EnumHelper<GamePadButtonTypes>.IfDefined(Right, GamePadButtonTypes.DPadRight);
-            RotateLeft = EnumHelper<GamePadButtonTypes>.IfDefined(RotateLeft, GamePadButtonTypes.ButtonsA);
-            RotateRight = EnumHelper<GamePadButtonTypes>.IfDefined(RotateRight, GamePadButtonTypes.ButtonsB);
-            Drop = EnumHelper<GamePadButtonTypes>.IfDefined(Drop, GamePadButtonTypes.ButtonsLeftShoulder);
-            Swap = EnumHelper<GamePadButtonTypes>.IfDefined(Swap, GamePadButtonTypes.ButtonsRightShoulder);
-            Pause = EnumHelper<GamePadButtonTypes>.IfDefined(Pause, GamePadButtonTypes.ButtonsStart);
+            if (table == default) throw new ArgumentNullException(nameof(table));
+
+            var options = new GameInputGamePadOptions();
+
+            if (table.TryGetTable("input.gamepad", out var gamepad))
+            {
+                if (gamepad.TryGetValue("enabled", out bool enabled))
+                    options.Enabled = enabled;
+                if (gamepad.TryGetEnumValue<PlayerIndex>("controller", out var controller))
+                    options.PlayerIndex = controller;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("up", out var up))
+                    options.Up = up;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("down", out var down))
+                    options.Down = down;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("left", out var left))
+                    options.Left = left;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("right", out var right))
+                    options.Right = right;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("rotate_left", out var rotateLeft))
+                    options.RotateLeft = rotateLeft;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("rotate_right", out var rotateRight))
+                    options.RotateRight = rotateRight;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("drop", out var drop))
+                    options.Drop = drop;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("swap", out var swap))
+                    options.Swap = swap;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("pause", out var pause))
+                    options.Pause = pause;
+            }
+
+            return options;
         }
     }
 }

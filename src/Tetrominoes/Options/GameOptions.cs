@@ -1,5 +1,3 @@
-#nullable disable
-
 using Nett;
 using System;
 using System.IO;
@@ -9,12 +7,23 @@ namespace Tetrominoes.Options
 {
     public class GameOptions
     {
-        public static GameOptions CreateDefault() =>
-            new GameOptions
-            {
-                Graphics = GameGraphicsOptions.CreateDefault(),
-                Input = GameInputOptions.CreateDefault()
-            };
+        public GameOptions()
+        {
+            Graphics = new GameGraphicsOptions();
+            Input = new GameInputOptions();
+            Audio = new GameAudioOptions();
+        }
+
+        public GameOptions(
+            GameGraphicsOptions graphics,
+            GameInputOptions input,
+            GameAudioOptions audio
+        )
+        {
+            Graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
+            Input = input ?? throw new ArgumentNullException(nameof(input));
+            Audio = audio ?? throw new ArgumentNullException(nameof(audio));
+        }
 
         [TomlMember(Key = "graphics")]
         public GameGraphicsOptions Graphics { get; set; }
@@ -43,26 +52,29 @@ namespace Tetrominoes.Options
         {
             var path = GetTomlPath();
 
-            if (!File.Exists(path)) return CreateDefault();
+            if (!File.Exists(path)) return new GameOptions();
 
             using var stream = File.OpenRead(path);
-            return Load(stream) ?? CreateDefault();
+            return Load(stream) ?? new GameOptions();
         }
 
-        public static GameOptions Load(Stream source)
+        public static GameOptions? Load(Stream source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
             try
             {
-                var options = Toml.ReadStream<GameOptions>(source)
-                    ?? CreateDefault();
-                options.ValidateConstraints();
-                return options;
+                var table = Toml.ReadStream(source);
+
+                return new GameOptions(
+                    GameGraphicsOptions.FromToml(table),
+                    GameInputOptions.FromToml(table),
+                    GameAudioOptions.FromToml(table)
+                );
             }
             catch // TODO better handling here.
             {
-                return CreateDefault();
+                return default;
             }
         }
 
@@ -85,36 +97,6 @@ namespace Tetrominoes.Options
             catch // TODO better handling here.
             {
 
-            }
-        }
-
-        public void ValidateConstraints()
-        {
-            if (Graphics == null)
-            {
-                Graphics = GameGraphicsOptions.CreateDefault();
-            }
-            else
-            {
-                Graphics.ValidateConstraints();
-            }
-
-            if (Input == null)
-            {
-                Input = GameInputOptions.CreateDefault();
-            }
-            else
-            {
-                Input.ValidateConstraints();
-            }
-
-            if (Audio == null)
-            {
-                Audio = GameAudioOptions.CreateDefault();
-            }
-            else
-            {
-                Audio.ValidateConstraints();
             }
         }
     }

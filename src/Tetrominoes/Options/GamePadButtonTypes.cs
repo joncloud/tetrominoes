@@ -1,5 +1,3 @@
-#nullable disable
-
 namespace Tetrominoes.Options
 {
     public enum GamePadButtonTypes

@@ -1,26 +1,24 @@
-#nullable disable
-
 using Microsoft.Xna.Framework.Input;
 using Nett;
+using System;
 
 namespace Tetrominoes.Options
 {
     public class GameInputKeyboardOptions
     {
-        public static GameInputKeyboardOptions CreateDefault() =>
-            new GameInputKeyboardOptions
-            {
-                Enabled = true,
-                Up = Keys.W,
-                Down = Keys.S,
-                Left = Keys.A,
-                Right = Keys.D,
-                RotateLeft = Keys.J,
-                RotateRight = Keys.L,
-                Drop = Keys.K,
-                Swap = Keys.I,
-                Pause = Keys.Space
-            };
+        public GameInputKeyboardOptions()
+        {
+            Enabled = true;
+            Up = Keys.W;
+            Down = Keys.S;
+            Left = Keys.A;
+            Right = Keys.D;
+            RotateLeft = Keys.J;
+            RotateRight = Keys.L;
+            Drop = Keys.K;
+            Swap = Keys.I;
+            Pause = Keys.Space;
+        }
 
         [TomlMember(Key = "enabled")]
         public bool Enabled { get; set; }
@@ -44,17 +42,37 @@ namespace Tetrominoes.Options
         [TomlMember(Key = "pause")]
         public Keys Pause { get; set; }
 
-        internal void ValidateConstraints()
+        public static GameInputKeyboardOptions FromToml(TomlTable table)
         {
-            Up = EnumHelper<Keys>.IfDefined(Up, Keys.W);
-            Down = EnumHelper<Keys>.IfDefined(Down, Keys.S);
-            Left = EnumHelper<Keys>.IfDefined(Left, Keys.A);
-            Right = EnumHelper<Keys>.IfDefined(Right, Keys.D);
-            RotateLeft = EnumHelper<Keys>.IfDefined(RotateLeft, Keys.J);
-            RotateRight = EnumHelper<Keys>.IfDefined(RotateRight, Keys.L);
-            Drop = EnumHelper<Keys>.IfDefined(Drop, Keys.K);
-            Swap = EnumHelper<Keys>.IfDefined(Swap, Keys.I);
-            Pause = EnumHelper<Keys>.IfDefined(Pause, Keys.Space);
+            if (table == default) throw new ArgumentNullException(nameof(table));
+
+            var options = new GameInputKeyboardOptions();
+
+            if (table.TryGetTable("input.keyboard", out var keyboard))
+            {
+                if (keyboard.TryGetValue("enabled", out bool enabled))
+                    options.Enabled = enabled;
+                if (keyboard.TryGetEnumValue<Keys>("up", out var up))
+                    options.Up = up;
+                if (keyboard.TryGetEnumValue<Keys>("down", out var down))
+                    options.Down = down;
+                if (keyboard.TryGetEnumValue<Keys>("left", out var left))
+                    options.Left = left;
+                if (keyboard.TryGetEnumValue<Keys>("right", out var right))
+                    options.Right = right;
+                if (keyboard.TryGetEnumValue<Keys>("rotate_left", out var rotateLeft))
+                    options.RotateLeft = rotateLeft;
+                if (keyboard.TryGetEnumValue<Keys>("rotate_right", out var rotateRight))
+                    options.RotateRight = rotateRight;
+                if (keyboard.TryGetEnumValue<Keys>("drop", out var drop))
+                    options.Drop = drop;
+                if (keyboard.TryGetEnumValue<Keys>("swap", out var swap))
+                    options.Swap = swap;
+                if (keyboard.TryGetEnumValue<Keys>("pause", out var pause))
+                    options.Pause = pause;
+            }
+
+            return options;
         }
     }
 }
