@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tetrominoes", "src\Tetromin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tetrominoes.OpenGL", "src\Tetrominoes.OpenGL\Tetrominoes.OpenGL.csproj", "{DE09C381-524D-42E8-B6CB-D1A6F93409E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tetrominoes.Tests", "tests\Tetrominoes.Tests\Tetrominoes.Tests.csproj", "{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{DE09C381-524D-42E8-B6CB-D1A6F93409E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE09C381-524D-42E8-B6CB-D1A6F93409E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE09C381-524D-42E8-B6CB-D1A6F93409E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0C01E040-095B-4350-8C2A-C2FFFEF93E8E} = {31FFEC1B-515A-4238-98AE-8E843BFBD798}
 		{DE09C381-524D-42E8-B6CB-D1A6F93409E3} = {31FFEC1B-515A-4238-98AE-8E843BFBD798}
+		{CD46DB9E-ADBD-4B30-A162-BA0A00CD8555} = {0D067517-CFE6-412F-9EAD-C1E145512D80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE644B42-9397-4041-A892-B9B527AA6796}

@@ -13,6 +13,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: Test with dotnet
+      run: dotnet test --configuration Release
+      working-directory: tests/Tetrominoes.Tests
     - name: Build with dotnet
       run: dotnet publish --configuration Release
       working-directory: src/Tetrominoes.OpenGL
