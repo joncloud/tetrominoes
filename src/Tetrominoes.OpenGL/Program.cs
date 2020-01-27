@@ -52,6 +52,7 @@ namespace Tetrominoes.OpenGL
             InputComponent.AddTo(this);
             AudioComponent.AddTo(this);
 
+            OptionEditorComponent.AddTo(this);
             MenuComponent.AddTo(this);
             MatchComponent.AddTo(this);
             base.Initialize();

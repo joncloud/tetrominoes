@@ -1,25 +1,26 @@
-#nullable disable
+﻿#nullable disable
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using Tetrominoes.Audio;
 using Tetrominoes.Input;
-using Tetrominoes.Options;
 
-namespace Tetrominoes
+namespace Tetrominoes.Options
 {
-    public class MenuComponent : DrawableGameComponent, IMenuService
+    public class OptionEditorComponent : DrawableGameComponent, IOptionEditorService
     {
-        public MenuComponent(Game game) : base(game)
+        public OptionEditorComponent(Game game)
+            : base(game)
         {
         }
 
-        public static MenuComponent AddTo(Game game)
+        public static OptionEditorComponent AddTo(Game game)
         {
-            var component = new MenuComponent(game);
+            var component = new OptionEditorComponent(game);
             game.Components.Add(component);
-            game.Services.AddService<IMenuService>(component);
+            game.Services.AddService<IOptionEditorService>(component);
             return component;
         }
 
@@ -34,39 +35,38 @@ namespace Tetrominoes
         }
 
         IInputService _input;
-        MenuOption[] _options;
+        IOption[] _options;
         int _selectedOptionIndex;
-        IMatchService _match;
+        IMenuService _menu;
         IAudioService _audio;
-        IOptionEditorService _optionEditor;
         public override void Initialize()
         {
             _input = Game.Services.GetService<IInputService>();
-            _match = Game.Services.GetService<IMatchService>();
+            _menu = Game.Services.GetService<IMenuService>();
             _audio = Game.Services.GetService<IAudioService>();
-            _optionEditor = Game.Services.GetService<IOptionEditorService>();
 
-            _options = new[]
+            // TODO build based on options
+            _options = new IOption[]
             {
-                new MenuOption(NewGame, "New Game", new Vector2()),
-                new MenuOption(ShowOptions, "Options", new Vector2(0, 64)),
-                new MenuOption(Game.Exit, "Quit", new Vector2(0, 128))
+                new OptionHeader("Back"),
+                new OptionHeader("Graphics"),
+                new OptionItemList<string>("Resolution", "1920x1080", new[] { "1920x1080" }),
+                new OptionToggle("Resolution") { SelectedValue = true },
+                new OptionHeader("Audio"),
+                new OptionPercentage("Music Volume", 75),
+                new OptionPercentage("Sound Volume", 100),
+                new OptionHeader("Input"),
+                new OptionHeader("Keyboard"),
+                new OptionToggle("Enabled"),
+                new OptionEnum<Keys>("Up", Keys.W),
+                new OptionHeader("Gamepad"),
+                new OptionEnum<GamePadButtonTypes>("Up", GamePadButtonTypes.DPadUp),
+                new OptionToggle("Enabled")
             };
 
             base.Initialize();
         }
 
-        void NewGame()
-        {
-            _match.NewMatch();
-            Hide();
-        }
-
-        void ShowOptions()
-        {
-            _optionEditor.Show();
-            Hide();
-        }
 
         SpriteBatch _spriteBatch;
         SpriteFont _normalWeight;
@@ -108,26 +108,8 @@ namespace Tetrominoes
                 _audio.Sound.Play(Sound.Move);
             }
 
-            var chosenState = InputMath.GreaterOf(
-                state.RotateLeft,
-                InputMath.GreaterOf(
-                    state.RotateRight,
-                    InputMath.GreaterOf(
-                        state.Swap,
-                        InputMath.GreaterOf(
-                            state.Drop,
-                            InputMath.GreaterOf(
-                                state.Drop,
-                                state.Pause
-                            )
-                        )
-                    )
-                )
-            );
-            if (chosenState == InputButtonState.Pressed)
-            {
-                _options[_selectedOptionIndex].Choose();
-            }
+            // TODO allow changing options
+            // TODO allow going back (and saving options)
 
             base.Update(gameTime);
         }
@@ -146,7 +128,7 @@ namespace Tetrominoes
                 var option = _options[i];
 
                 maxWidth = Math.Max(
-                    font.MeasureString(option.Text).X,
+                    font.MeasureString(option.Name).X,
                     maxWidth
                 );
             }
@@ -154,11 +136,12 @@ namespace Tetrominoes
             var pp = GraphicsDevice.PresentationParameters;
             var tx = Matrix.CreateTranslation(
                 (pp.BackBufferWidth - maxWidth) / 2,
-                (pp.BackBufferHeight - 64) / 2,
+                _selectedOptionIndex * -64,
                 0
             );
-
+            
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
+            var pos = new Vector2();
             for (var i = 0; i < _options.Length; i++)
             {
                 var font = i == _selectedOptionIndex
@@ -166,16 +149,18 @@ namespace Tetrominoes
                     : _normalWeight;
 
                 var option = _options[i];
+                var measurement = font.MeasureString(option.Name);
 
                 _spriteBatch.DrawString(
                     font,
-                    option.Text,
-                    option.Position,
+                    option.Name,
+                    pos,
                     Color.Black
                 );
+
+                pos.Y += measurement.Y;
             }
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
