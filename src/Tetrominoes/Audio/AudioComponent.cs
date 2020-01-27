@@ -36,8 +36,8 @@ namespace Tetrominoes.Audio
             base.Initialize();
         }
 
-        public IMusic Music { get; private set; }
-        public ISound Sound { get; private set; }
+        public IMusicService Music { get; private set; }
+        public ISoundService Sound { get; private set; }
         protected override void LoadContent()
         {
             MediaPlayer.IsRepeating = true;
