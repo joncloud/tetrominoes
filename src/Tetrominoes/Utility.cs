@@ -1,5 +1,3 @@
-#nullable disable
-
 namespace Tetrominoes
 {
     public static class Utility

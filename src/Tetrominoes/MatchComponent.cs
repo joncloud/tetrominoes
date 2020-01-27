@@ -47,7 +47,6 @@ namespace Tetrominoes
             }
 
             _match = new Match(new Random(1));
-            _match.Tetrominoes.NextPiece();
             _match.Score.LevelChanged += Score_LevelChanged;
             _match.Score.PieceLocked += Score_PieceLocked;
             _match.Score.RowsCleared += Score_RowsCleared;

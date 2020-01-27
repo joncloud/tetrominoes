@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,12 +24,12 @@ namespace Tetrominoes.OpenGL
             game.Run();
         }
 
-        static void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        static void PreparingDeviceSettings(object? sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
 
-        IOptionService _options;
+        IOptionService? _options;
         protected override void Initialize()
         {
             _options = OptionComponent.AddTo(this);
@@ -66,7 +64,9 @@ namespace Tetrominoes.OpenGL
             if (current.IsKeyDown(Keys.Escape)) Exit();
 
             var alt = current.IsKeyDown(Keys.LeftAlt) || current.IsKeyDown(Keys.RightAlt);
-            if (alt && _last.IsKeyUp(Keys.Enter) && current.IsKeyDown(Keys.Enter))
+            if (alt && _last.IsKeyUp(Keys.Enter) && 
+                current.IsKeyDown(Keys.Enter) && 
+                _options != default)
             {
                 _manager.PreferredBackBufferWidth = (int)_options.Options.Graphics.Width;
                 _manager.PreferredBackBufferHeight = (int)_options.Options.Graphics.Height;

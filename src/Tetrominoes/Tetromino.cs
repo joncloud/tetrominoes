@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using System;
 
@@ -85,13 +83,12 @@ namespace Tetrominoes
         public Vector2[] Squares;
         public Vector2 Position;
 
+        bool _disposed;
         public void Dispose()
         {
-            if (Squares != default)
-            {
-                SquarePool.Return(Squares);
-                Squares = default;
-            }
+            if (_disposed) return;
+            SquarePool.Return(Squares);
+            _disposed = true;
         }
     }
 }

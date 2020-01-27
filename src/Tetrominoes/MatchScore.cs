@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 
 namespace Tetrominoes
@@ -76,12 +74,12 @@ namespace Tetrominoes
 
         public Match Match { get; }
 
-        public event Action<MatchScore> LevelChanged;
-        public event Action<MatchScore, TetrominoPiece> PieceLocked;
-        public event Action<MatchScore, int> RowsCleared;
-        public event Action<MatchScore, MovementType> PieceMoved;
-        public event Action<MatchScore, RotationDirection> PieceRotated;
-        public event Action<MatchScore> PieceSwapped;
+        public event Action<MatchScore>? LevelChanged;
+        public event Action<MatchScore, TetrominoPiece>? PieceLocked;
+        public event Action<MatchScore, int>? RowsCleared;
+        public event Action<MatchScore, MovementType>? PieceMoved;
+        public event Action<MatchScore, RotationDirection>? PieceRotated;
+        public event Action<MatchScore>? PieceSwapped;
 
         public MatchScore(Match match)
         {

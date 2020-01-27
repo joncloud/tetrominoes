@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using System;
 
@@ -13,13 +11,19 @@ namespace Tetrominoes
         public Tetromino Current => _current;
         public Tetromino Shadow { get; private set; }
         public Tetromino Next { get; private set; }
-        Tetromino _swap;
-        public Tetromino Swap => _swap;
+        Tetromino? _swap;
+        public Tetromino? Swap => _swap;
 
         public MatchTetrominoes(Random random, Match match)
         {
             _random = random ?? throw new ArgumentNullException(nameof(random));
             Match = match ?? throw new ArgumentNullException(nameof(match));
+
+            _current = RandomTetromino();
+            Next = RandomTetromino();
+
+            Shadow = CreateShadow(Current);
+            ProjectShadow();
         }
 
         Tetromino RandomTetromino()
@@ -36,7 +40,12 @@ namespace Tetrominoes
                 Next = RandomTetromino();
             }
 
+            // Swap isn't null here, because it was just
+            // checked for, and if it is null it gets pulled
+            // from Next which can't be null.
+#pragma warning disable CS8601 // Possible null reference assignment.
             Utility.Swap(ref _swap, ref _current);
+#pragma warning restore CS8601 // Possible null reference assignment.
             Utility.Swap(ref _swap.Position, ref _current.Position);
 
             Shadow.Dispose();
@@ -89,30 +98,23 @@ namespace Tetrominoes
 
         public void NextPiece()
         {
-            if (Shadow != null)
-            {
-                Shadow.Dispose();
-            }
+            Shadow.Dispose();
+            _current.Dispose();
 
-            if (Next == null)
-            {
-                _current = RandomTetromino();
-            }
-            else
-            {
-                _current.Dispose();
-                _current = Next;
-            }
+            _current = Next;
             _current.Position = new Vector2(MatchGrid.Width / 2, 2);
 
-            Shadow = new Tetromino(Current.Piece)
-            {
-                Position = Current.Position
-            };
+            Shadow = CreateShadow(Current);
             ProjectShadow();
 
             Next = RandomTetromino();
         }
+
+        static Tetromino CreateShadow(Tetromino caster) =>
+            new Tetromino(caster.Piece)
+            {
+                Position = caster.Position
+            };
 
         public void ProjectShadow()
         {

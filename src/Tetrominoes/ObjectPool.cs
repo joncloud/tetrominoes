@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +15,6 @@ namespace Tetrominoes
                 ? item
                 : _factory();
         public void Return(T item) =>
-            _items.Enqueue(item);
+            _items.Enqueue(item ?? throw new ArgumentNullException(nameof(item)));
     }
 }

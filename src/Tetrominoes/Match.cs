@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using System;
 
@@ -15,10 +13,10 @@ namespace Tetrominoes
         public Match(Random random)
         {
             Random = random ?? throw new ArgumentNullException(nameof(random));
-            Controller = new MatchController(this);
-            Tetrominoes = new MatchTetrominoes(random, this);
-            Score = new MatchScore(this);
             Grid = new MatchGrid();
+            Controller = new MatchController(this);
+            Score = new MatchScore(this);
+            Tetrominoes = new MatchTetrominoes(random, this);
         }
 
         TimeSpan _drop;
