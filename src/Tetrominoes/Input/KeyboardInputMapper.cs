@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework.Input;
 using System;
 using Tetrominoes.Options;
