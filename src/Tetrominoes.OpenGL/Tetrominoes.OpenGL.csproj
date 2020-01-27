@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Game.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
