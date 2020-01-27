@@ -20,6 +20,8 @@ namespace Tetrominoes
             Match = match ?? throw new ArgumentNullException(nameof(match));
 
             _current = RandomTetromino();
+            Center(_current);
+
             Next = RandomTetromino();
 
             Shadow = CreateShadow(Current);
@@ -96,13 +98,21 @@ namespace Tetrominoes
             }
         }
 
+        static void Center(Tetromino tetromino)
+        {
+            tetromino.Position = new Vector2(
+                (MatchGrid.Width / 2) - 1, 
+                2
+            );
+        }
+
         public void NextPiece()
         {
             Shadow.Dispose();
             _current.Dispose();
 
             _current = Next;
-            _current.Position = new Vector2(MatchGrid.Width / 2, 2);
+            Center(_current);
 
             Shadow = CreateShadow(Current);
             ProjectShadow();
