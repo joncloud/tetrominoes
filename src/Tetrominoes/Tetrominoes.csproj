@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.1" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
     <PackageReference Include="Nett" Version="0.13.0" />
   </ItemGroup>
 
