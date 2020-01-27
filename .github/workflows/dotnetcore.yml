@@ -9,21 +9,56 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+
     - name: Test with dotnet
       run: dotnet test --configuration Release
       working-directory: tests/Tetrominoes.Tests
+
     - name: Compress content
       run: powershell.exe -Command ./GenerateMgcb.ps1 -Path ./Content.mgcb -Compress -Force
       working-directory: src/Tetrominoes.OpenGL/Content
+
     - name: Build with dotnet
       run: dotnet publish --configuration Release
       working-directory: src/Tetrominoes.OpenGL
+
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Tetrominoes.OpenGL
         path: src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish
+
+    - name: Archive asset
+      run: 7z a OpenGL.zip ./src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish/*
+
+    - name: Create GitHub release
+      uses: actions/create-release@v1
+      id: create_release
+      if: startsWith(github.ref, 'v')
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+    - name: Upload GitHub release asset
+      if: startsWith(github.ref, 'v')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./OpenGL.zip
+        asset_name: OpenGL.zip
+        asset_content_type: application/zip
