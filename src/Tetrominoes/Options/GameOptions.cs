@@ -15,13 +15,13 @@ namespace Tetrominoes.Options
             };
 
         [TomlMember(Key = "graphics")]
-        public GameGraphicsOptions? Graphics { get; set; }
+        public GameGraphicsOptions Graphics { get; set; }
 
         [TomlMember(Key = "input")]
-        public GameInputOptions? Input { get; set; }
+        public GameInputOptions Input { get; set; }
 
         [TomlMember(Key = "audio")]
-        public GameAudioOptions? Audio { get; set; }
+        public GameAudioOptions Audio { get; set; }
 
         static string GetTomlPath()
         {
