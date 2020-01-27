@@ -1,4 +1,6 @@
-﻿using Nett;
+#nullable disable
+
+using Nett;
 
 namespace Tetrominoes.Options
 {

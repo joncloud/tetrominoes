@@ -1,4 +1,6 @@
-﻿using Nett;
+#nullable disable
+
+using Nett;
 using System;
 using System.IO;
 using System.Reflection;

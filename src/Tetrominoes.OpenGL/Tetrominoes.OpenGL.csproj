@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Nullable>enable</Nullable>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>

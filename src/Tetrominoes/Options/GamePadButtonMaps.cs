@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Input;
+#nullable disable
+
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace Tetrominoes.Options

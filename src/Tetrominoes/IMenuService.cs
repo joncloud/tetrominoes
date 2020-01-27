@@ -1,4 +1,6 @@
-﻿namespace Tetrominoes
+#nullable disable
+
+namespace Tetrominoes
 {
     public interface IMenuService
     {

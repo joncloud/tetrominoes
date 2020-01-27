@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+#nullable disable
+
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Tetrominoes.Options;
 
