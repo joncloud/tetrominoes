@@ -16,3 +16,8 @@ jobs:
     - name: Build with dotnet
       run: dotnet publish --configuration Release
       working-directory: src/Tetrominoes.OpenGL
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Tetrominoes.OpenGL
+        path: src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish
