@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -20,7 +18,7 @@ namespace Tetrominoes
         public BackgroundEffectFormula Formula { get; }
         public BackgroundEffect(Effect effect, BackgroundEffectFormula formula)
         {
-            Effect = effect ?? throw new ArgumentNullException(nameof(effect));
+            _effect = effect ?? throw new ArgumentNullException(nameof(effect));
             Formula = formula ?? throw new ArgumentNullException(nameof(formula));
         }
 
@@ -31,32 +29,5 @@ namespace Tetrominoes
             );
             Formula.Apply(Effect);
         }
-    }
-
-
-    public class BackgroundEffectFormula
-    {
-        public float Amplitude;
-        public float Frequency;
-        public float Speed;
-        public BackgroundEffectFormula(float amplitude, float frequency, float speed)
-        {
-            Amplitude = amplitude;
-            Frequency = frequency;
-            Speed = speed;
-        }
-
-        public void Apply(Effect effect)
-        {
-            effect.Parameters["A"].SetValue(Amplitude);
-            effect.Parameters["F"].SetValue(Frequency);
-            effect.Parameters["S"].SetValue(Speed);
-        }
-
-        public float Calculate(float y, float t) =>
-            (float)(Amplitude * Math.Sin((Frequency * y) + (Speed * t)));
-
-        public override string ToString() =>
-            $"A{Amplitude},F{Frequency},S{Speed}";
     }
 }
