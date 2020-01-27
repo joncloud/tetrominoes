@@ -1,0 +1,153 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin
+/intermediateDir:obj
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Effects/Cycloid.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Cycloid.hlsl
+
+#begin Effects/Epicycloid.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Epicycloid.hlsl
+
+#begin Effects/HorizontalCross.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/HorizontalCross.hlsl
+
+#begin Effects/Hypocycloid.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Hypocycloid.hlsl
+
+#begin Effects/LissajousCurve.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/LissajousCurve.hlsl
+
+#begin Effects/Spirograph.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Spirograph.hlsl
+
+#begin Effects/VerticalCross.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/VerticalCross.hlsl
+
+#begin Fonts/UI-Bold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/UI-Bold.spritefont
+
+#begin Fonts/UI.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/UI.spritefont
+
+#begin Music/1709 Bach , Toccata in D minor.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1709 Bach , Toccata in D minor.ogg
+
+#begin Music/1725 Vivaldi , The Four Seasons - Spring.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1725 Vivaldi , The Four Seasons - Spring.ogg
+
+#begin Music/1731 Vivaldi , Flute Concerto in G minor 'La Notte', VI. Allegro.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1731 Vivaldi , Flute Concerto in G minor 'La Notte', VI. Allegro.ogg
+
+#begin Music/1778 Rondo Alla Turca, from Piano Sonata in A.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1778 Rondo Alla Turca, from Piano Sonata in A.ogg
+
+#begin Music/1786 The Marriage of Figaro - Overture.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1786 The Marriage of Figaro - Overture.ogg
+
+#begin Music/1787 Eine Kleine Nachtmusik, 1st movement.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/1787 Eine Kleine Nachtmusik, 1st movement.ogg
+
+#begin Music/Modest_Mussorgsky_-_night_on_bald_mountain.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/Modest_Mussorgsky_-_night_on_bald_mountain.ogg
+
+#begin Sounds/Drop.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Drop.wav
+
+#begin Sounds/Move.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Move.wav
+
+#begin Sounds/RotateLeft.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/RotateLeft.wav
+
+#begin Sounds/RotateRight.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/RotateRight.wav
+
+#begin Sounds/RowClear.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/RowClear.wav
+
+#begin Textures/Tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Tiles.png
