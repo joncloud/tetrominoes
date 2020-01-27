@@ -4,9 +4,6 @@ namespace Tetrominoes
     {
         None,
         Lock,
-        Move,
-        Drop,
-        RotateLeft,
-        RotateRight
+        Move
     }
 }
