@@ -46,7 +46,13 @@ namespace Tetrominoes
                 _match.Dispose();
             }
 
-            _match = new Match(new Random(1));
+            _match = new Match(
+#if DEBUG
+                new Random(1)
+#else
+                new Random()
+#endif
+            );
             _match.Score.LevelChanged += Score_LevelChanged;
             _match.Score.PieceLocked += Score_PieceLocked;
             _match.Score.RowsCleared += Score_RowsCleared;
