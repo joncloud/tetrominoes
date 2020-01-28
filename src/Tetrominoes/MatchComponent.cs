@@ -197,7 +197,8 @@ namespace Tetrominoes
         RenderTarget2D _boardBuffer;
         SpriteBatch _spriteBatch;
         TetrominoRenderer _tetrominoRenderer;
-        SpriteFont _font;
+        SpriteFont _normalWeightFont;
+        SpriteFont _boldWeightFont;
         BackgroundEffect _backgroundEffect;
         const int TileWidth = 8;
         static string[] _effectNames = new[]
@@ -212,7 +213,8 @@ namespace Tetrominoes
         };
         protected override void LoadContent()
         {
-            _font = Game.Content.Load<SpriteFont>("Fonts/UI");
+            _normalWeightFont = Game.Content.Load<SpriteFont>("Fonts/UI");
+            _boldWeightFont = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
             _tileTexture = Game.Content.Load<Texture2D>("Textures/Tiles");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _tetrominoRenderer = new TetrominoRenderer(
@@ -371,17 +373,34 @@ namespace Tetrominoes
             base.Update(gameTime);
         }
 
+        readonly string[] _pauseText = new[]
+        {
+            "Press Pause"
+        };
+        readonly string[] _lostText = new[] 
+        {
+            "Game Over",
+            "Press Pause"
+        };
         public override void Draw(GameTime gameTime)
         {
             var pp = GraphicsDevice.PresentationParameters;
             var scale = 4;
             var totalWidth = pp.BackBufferWidth / 4;
-            var gridWidth = MatchGrid.Width * TileWidth;
+            var gridWidth = (MatchGrid.Width + 4) * TileWidth;
 
             RenderBackground();
             RenderBoard();
             RenderBuffer(scale, totalWidth, gridWidth);
             RenderHud(scale, totalWidth, gridWidth);
+            if (_state == MatchState.Paused)
+            {
+                RenderText(_pauseText, gameTime);
+            }
+            else if(_state == MatchState.Lost)
+            {
+                RenderText(_lostText, gameTime);
+            }
 
             base.Draw(gameTime);
         }
@@ -522,49 +541,112 @@ namespace Tetrominoes
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 _match.Score.TotalTimeAsText,
                 new Vector2(0, 0),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 "Score",
                 new Vector2(0, 64),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 _match.Score.TotalScoreAsText,
                 new Vector2(275, 64),
                 Color.Black
             );
 
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 "Level",
                 new Vector2(0, 128),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 _match.Score.LevelAsText,
                 new Vector2(275, 128),
                 Color.Black
             );
 
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 "Rows",
                 new Vector2(0, 192),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _font,
+                _normalWeightFont,
                 _match.Score.TotalRowsAsText,
                 new Vector2(275, 192),
                 Color.Black
             );
+
+            _spriteBatch.End();
+        }
+
+        void RenderText(string[] lines, GameTime gameTime)
+        {
+            Span<Vector2> measurements = stackalloc Vector2[lines.Length];
+
+            var maxWidth = 0.0f; // _boldWeightFont.MeasureString(text).X;
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var measurement = 
+                    measurements[i] = 
+                    _boldWeightFont.MeasureString(lines[i]);
+                maxWidth = Math.Max(maxWidth, measurement.X);
+            }
+
+            var pp = GraphicsDevice.PresentationParameters;
+            var tx = Matrix.CreateTranslation(
+                (pp.BackBufferWidth - maxWidth) / 2,
+                (pp.BackBufferHeight - 64) / 2,
+                0
+            );
+
+            _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
+
+            // Vary the border to make it look on purpose
+            var x = 
+                (float)(3 * Math.Sin(gameTime.TotalGameTime.TotalMilliseconds / 200)) + 5f;
+            var y =
+                (float)(3 * Math.Cos(gameTime.TotalGameTime.TotalMilliseconds / 200)) + 5f;
+            var offset = new Vector2(x, y);
+
+            var pos = Vector2.Zero;
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var measurement = measurements[i];
+                var line = lines[i];
+
+                pos.X = (maxWidth - measurement.X) / 2;
+
+                // Poor implementation for borders
+                _spriteBatch.DrawString(
+                    _boldWeightFont,
+                    line,
+                    pos - offset,
+                    Color.Black
+                );
+                _spriteBatch.DrawString(
+                    _boldWeightFont,
+                    line,
+                    pos + offset,
+                    Color.Black
+                );
+                _spriteBatch.DrawString(
+                    _boldWeightFont,
+                    line,
+                    pos,
+                    Color.White
+                );
+
+                pos.Y += measurement.Y;
+            }
 
             _spriteBatch.End();
         }
