@@ -23,7 +23,7 @@
 4. Run `Tetrominoes.OpenGL.exe`
     - On Linux and MacOS platforms run `dotnet Tetrominoes.OpenGL.exe`
 
-[Latest Release]: ./releases
+[Latest Release]: https://github.com/joncloud/tetrominoes/releases
 
 ### Keyboard Controls
 * Movement - `W` `A` `S` `D`
