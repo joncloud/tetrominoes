@@ -194,6 +194,7 @@ namespace Tetrominoes
 
         Texture2D _tileTexture;
         RenderTarget2D _backgroundTexture;
+        RenderTarget2D _previewTexture;
         RenderTarget2D _boardBuffer;
         SpriteBatch _spriteBatch;
         TetrominoRenderer _tetrominoRenderer;
@@ -228,11 +229,6 @@ namespace Tetrominoes
                 (MatchGrid.Height + 2) * TileWidth
             );
 
-            _backgroundTexture = new RenderTarget2D(
-                GraphicsDevice,
-                (MatchGrid.Width + 4) * TileWidth,
-                (MatchGrid.Height + 2) * TileWidth
-            );
 
             _backgroundEffect = new BackgroundEffect(
                 Game.Content.Load<Effect>(
@@ -243,6 +239,47 @@ namespace Tetrominoes
                     0.5f,
                     0.001f
                 )
+            );
+
+            CreatePreviewTexture();
+            CreateBackgroundTexture();
+
+            base.LoadContent();
+        }
+
+        void CreatePreviewTexture()
+        {
+            _previewTexture = new RenderTarget2D(
+                GraphicsDevice,
+                6 * TileWidth,
+                6 * TileWidth
+            );
+            GraphicsDevice.SetRenderTarget(_previewTexture);
+            _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+
+            // TODO This could probably be done with one call
+            for (var x = 0; x < 8; x++)
+            {
+                for (var y = 0; y < 8; y++)
+                {
+                    _spriteBatch.Draw(
+                        _tileTexture,
+                        new Vector2(x, y) * TileWidth,
+                        new Rectangle(0, 0, TileWidth, TileWidth),
+                        Color.White
+                    );
+                }
+            }
+            _spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(default);
+        }
+
+        void CreateBackgroundTexture()
+        {
+            _backgroundTexture = new RenderTarget2D(
+                GraphicsDevice,
+                (MatchGrid.Width + 4) * TileWidth,
+                (MatchGrid.Height + 2) * TileWidth
             );
             GraphicsDevice.SetRenderTarget(_backgroundTexture);
             _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
@@ -262,8 +299,6 @@ namespace Tetrominoes
             }
             _spriteBatch.End();
             GraphicsDevice.SetRenderTarget(default);
-
-            base.LoadContent();
         }
 
         static readonly Color[] _colors = new[]
@@ -507,6 +542,12 @@ namespace Tetrominoes
 
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
 
+            _spriteBatch.Draw(
+                _previewTexture,
+                -Vector2.One * 16,
+                new Color(Color.White, 0.10f)
+            );
+
             var tetrominoes = _match.Tetrominoes;
             _tetrominoRenderer.Draw(
                 tetrominoes.Next,
@@ -518,22 +559,28 @@ namespace Tetrominoes
 
         void RenderSwapPiece(int scale, int totalWidth, int gridWidth)
         {
+            var tx = Matrix.CreateTranslation((totalWidth - gridWidth) / 2, 0, 0)
+                * Matrix.CreateTranslation(gridWidth + 48, 128, 0)
+                * Matrix.CreateScale(scale, scale, 0);
+
+            _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.Draw(
+                _previewTexture,
+                -Vector2.One * 16,
+                new Color(Color.White, 0.10f)
+            );
+
             var tetrominoes = _match.Tetrominoes;
             if (tetrominoes.Swap != default)
             {
-                var tx = Matrix.CreateTranslation((totalWidth - gridWidth) / 2, 0, 0)
-                    * Matrix.CreateTranslation(gridWidth + 48, 128, 0)
-                    * Matrix.CreateScale(scale, scale, 0);
-
-                _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
-
                 _tetrominoRenderer.Draw(
                     tetrominoes.Swap,
                     _colors[(int)tetrominoes.Swap.Piece]
                 );
-
-                _spriteBatch.End();
             }
+
+            _spriteBatch.End();
         }
 
         void RenderScore()
