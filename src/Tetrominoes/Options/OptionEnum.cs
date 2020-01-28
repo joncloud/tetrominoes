@@ -21,5 +21,7 @@ namespace Tetrominoes.Options
             Name = name ?? throw new ArgumentNullException(nameof(name));
             _selectedValue = selectedValue ?? throw new ArgumentNullException(nameof(selectedValue));
         }
+
+        public override string ToString() => SelectedValue.ToString();
     }
 }

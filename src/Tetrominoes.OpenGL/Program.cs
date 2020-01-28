@@ -32,6 +32,8 @@ namespace Tetrominoes.OpenGL
         IOptionService? _options;
         protected override void Initialize()
         {
+            Services.AddService(_manager);
+
             _options = OptionComponent.AddTo(this);
             var graphics = _options.Options.Graphics;
             if (graphics == null)

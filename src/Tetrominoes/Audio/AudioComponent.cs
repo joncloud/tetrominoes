@@ -29,11 +29,14 @@ namespace Tetrominoes.Audio
         IOptionService _options;
         public override void Initialize()
         {
-            //var messageService = Game.Services.GetService<IMessageService>();
-            //messageService.Register<OptionsUpdated>(this);
-
             _options = Game.Services.GetService<IOptionService>();
+            _options.Updated += OptionsUpdated;
             base.Initialize();
+        }
+
+        void OptionsUpdated(GameOptions options)
+        {
+            MediaPlayer.Volume = options.Audio.MusicVolumePercentage;
         }
 
         public IMusicService Music { get; private set; }
@@ -66,10 +69,5 @@ namespace Tetrominoes.Audio
 
             base.Update(gameTime);
         }
-
-        //public void Handle(OptionsUpdated _)
-        //{
-        //    MediaPlayer.Volume = _options.Options.Audio.MusicVolumePercentage;
-        //}
     }
 }

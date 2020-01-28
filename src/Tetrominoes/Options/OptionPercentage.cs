@@ -17,5 +17,7 @@ namespace Tetrominoes.Options
             Name = name ?? throw new ArgumentNullException(nameof(name));
             SelectedValue = selectedValue;
         }
+
+        public override string ToString() => (SelectedValue / 100.0f).ToString("P");
     }
 }

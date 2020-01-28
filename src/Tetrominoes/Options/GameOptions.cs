@@ -82,7 +82,10 @@ namespace Tetrominoes.Options
         {
             var path = GetTomlPath();
 
-            using var stream = File.Open(path, File.Exists(path) ? FileMode.Truncate : FileMode.CreateNew);
+            var mode = File.Exists(path) 
+                ? FileMode.Truncate 
+                : FileMode.CreateNew;
+            using var stream = File.Open(path, mode);
             Save(stream);
         }
 

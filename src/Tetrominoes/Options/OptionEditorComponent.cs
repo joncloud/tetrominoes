@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Tetrominoes.Audio;
 using Tetrominoes.Input;
 
@@ -14,6 +16,7 @@ namespace Tetrominoes.Options
         public OptionEditorComponent(Game game)
             : base(game)
         {
+            Enabled = Visible = false;
         }
 
         public static OptionEditorComponent AddTo(Game game)
@@ -24,6 +27,7 @@ namespace Tetrominoes.Options
             return component;
         }
 
+        TimeSpan _delay;
         public void Hide()
         {
             Enabled = Visible = false;
@@ -31,42 +35,209 @@ namespace Tetrominoes.Options
 
         public void Show()
         {
+            _delay = TimeSpan.FromMilliseconds(300);
+            _model = new OptionModel(_options.Options);
+            _selectedOptionIndex = 0;
             Enabled = Visible = true;
         }
 
         IInputService _input;
-        IOption[] _options;
+        OptionModel _model;
         int _selectedOptionIndex;
         IMenuService _menu;
         IAudioService _audio;
+        IOptionService _options;
+        GraphicsDeviceManager _manager;
         public override void Initialize()
         {
             _input = Game.Services.GetService<IInputService>();
             _menu = Game.Services.GetService<IMenuService>();
             _audio = Game.Services.GetService<IAudioService>();
-
-            // TODO build based on options
-            _options = new IOption[]
-            {
-                new OptionHeader("Back"),
-                new OptionHeader("Graphics"),
-                new OptionItemList<string>("Resolution", "1920x1080", new[] { "1920x1080" }),
-                new OptionToggle("Resolution") { SelectedValue = true },
-                new OptionHeader("Audio"),
-                new OptionPercentage("Music Volume", 75),
-                new OptionPercentage("Sound Volume", 100),
-                new OptionHeader("Input"),
-                new OptionHeader("Keyboard"),
-                new OptionToggle("Enabled"),
-                new OptionEnum<Keys>("Up", Keys.W),
-                new OptionHeader("Gamepad"),
-                new OptionEnum<GamePadButtonTypes>("Up", GamePadButtonTypes.DPadUp),
-                new OptionToggle("Enabled")
-            };
+            _options = Game.Services.GetService<IOptionService>();
+            _manager = Game.Services.GetService<GraphicsDeviceManager>();
 
             base.Initialize();
         }
 
+        struct Resolution
+        {
+            public uint Width { get; }
+            public uint Height { get; }
+            public Resolution(uint width, uint height)
+            {
+                Width = width;
+                Height = height;
+            }
+            public override string ToString() =>
+                $"{Width}x{Height}";
+        }
+
+        class OptionModel
+        {
+            readonly GameOptions _root;
+            readonly OptionGraphicsModel _graphics;
+            readonly OptionAudioModel _audio;
+            readonly OptionInputKeyboardModel _keyboard;
+            readonly OptionInputGamePadModel _gamePad;
+
+            public IReadOnlyList<IOption> Options { get; }
+
+            public OptionModel(GameOptions options)
+            {
+                _root = options ?? throw new ArgumentNullException(nameof(options));
+                _graphics = new OptionGraphicsModel(options.Graphics);
+                _audio = new OptionAudioModel(options.Audio);
+                _keyboard = new OptionInputKeyboardModel(options.Input.Keyboard);
+                _gamePad = new OptionInputGamePadModel(options.Input.GamePad);
+
+                Options = new IOption[]
+                {
+                    new OptionHeader("Back"),
+                    new OptionHeader("Save"),
+                    _graphics.Header,
+                    _graphics.Resolution,
+                    _graphics.Fullscreen,
+                    _audio.Header,
+                    _audio.MusicVolume,
+                    _audio.SoundVolume,
+                    new OptionHeader("Input"),
+                    _keyboard.Header,
+                    _keyboard.Enabled,
+                    _keyboard.Up,
+                    _gamePad.Header,
+                    _gamePad.Enabled,
+                    _gamePad.Up
+                };
+            }
+
+            public void Commit()
+            {
+                _graphics.Commit();
+                _audio.Commit();
+                _keyboard.Commit();
+                _gamePad.Commit();
+            }
+
+            class OptionGraphicsModel
+            {
+                readonly GameGraphicsOptions _options;
+                public OptionHeader Header { get; }
+                public OptionItemList<Resolution> Resolution { get; }
+                public OptionToggle Fullscreen { get; }
+
+                public OptionGraphicsModel(GameGraphicsOptions options)
+                {
+                    _options = options ?? throw new ArgumentNullException(nameof(options));
+                    Header = new OptionHeader("Graphics");
+                    Resolution = new OptionItemList<Resolution>(
+                        "Resolution",
+                        new Resolution(options.Width, options.Height),
+                        new[] {
+
+                            // 16:9
+                            new Resolution(1280, 720),
+                            new Resolution(1366, 768),
+                            new Resolution(1600, 900),
+                            new Resolution(1920, 1080),
+                            new Resolution(2560, 1440),
+
+                            // 16:10
+                            new Resolution(1280, 800),
+                            new Resolution(1440, 900),
+                            new Resolution(1680, 1050),
+
+                            // 4:3
+                            new Resolution(800, 600),
+                            new Resolution(1024, 768),
+                            new Resolution(1280, 1024),
+                        }
+                    );
+                    Fullscreen = new OptionToggle("Fullscreen")
+                    {
+                        SelectedValue = options.Fullscreen
+                    };
+                }
+
+                public void Commit()
+                {
+                    _options.Fullscreen = Fullscreen.SelectedValue;
+                    _options.Width = Resolution.SelectedValue.Width;
+                    _options.Height = Resolution.SelectedValue.Height;
+                }
+            }
+
+            class OptionAudioModel
+            {
+                readonly GameAudioOptions _options;
+                public OptionHeader Header { get; }
+                public OptionPercentage MusicVolume { get; }
+                public OptionPercentage SoundVolume { get; }
+
+                public OptionAudioModel(GameAudioOptions options)
+                {
+                    _options = options ?? throw new ArgumentNullException(nameof(options));
+                    Header = new OptionHeader("Audio");
+                    MusicVolume = new OptionPercentage("Music Volume", options.MusicVolume);
+                    SoundVolume = new OptionPercentage("Sound Volume", options.SoundVolume);
+                }
+
+                public void Commit()
+                {
+                    _options.MusicVolume = MusicVolume.SelectedValue;
+                    _options.SoundVolume = SoundVolume.SelectedValue;
+                }
+            }
+
+            class OptionInputKeyboardModel
+            {
+                readonly GameInputKeyboardOptions _options;
+                public OptionHeader Header { get; }
+                public OptionToggle Enabled { get; }
+                public OptionEnum<Keys> Up { get; }
+
+                public OptionInputKeyboardModel(GameInputKeyboardOptions options)
+                {
+                    _options = options ?? throw new ArgumentNullException(nameof(options));
+                    Header = new OptionHeader("Keyboard");
+                    Enabled = new OptionToggle("Enabled")
+                    {
+                        SelectedValue = options.Enabled
+                    };
+                    Up = new OptionEnum<Keys>("Up", options.Up);
+                }
+
+                public void Commit()
+                {
+                    _options.Enabled = Enabled.SelectedValue;
+                    _options.Up = Up.SelectedValue;
+                }
+            }
+
+            class OptionInputGamePadModel
+            {
+                readonly GameInputGamePadOptions _options;
+                public OptionHeader Header { get; }
+                public OptionToggle Enabled { get; }
+                public OptionEnum<GamePadButtonTypes> Up { get; }
+
+                public OptionInputGamePadModel(GameInputGamePadOptions options)
+                {
+                    _options = options ?? throw new ArgumentNullException(nameof(options));
+                    Header = new OptionHeader("Gamepad");
+                    Enabled = new OptionToggle("Enabled")
+                    {
+                        SelectedValue = options.Enabled
+                    };
+                    Up = new OptionEnum<GamePadButtonTypes>("Up", options.Up);
+                }
+
+                public void Commit()
+                {
+                    _options.Enabled = Enabled.SelectedValue;
+                    _options.Up = Up.SelectedValue;
+                }
+            }
+        }
 
         SpriteBatch _spriteBatch;
         SpriteFont _normalWeight;
@@ -82,8 +253,98 @@ namespace Tetrominoes.Options
 
         public override void Update(GameTime gameTime)
         {
+            // Delay to prevent input from prior menu.
+            _delay -= gameTime.ElapsedGameTime;
+            if (_delay > TimeSpan.Zero)
+            {
+                return;
+            }
+
             var state = _input.State;
 
+            HandleOptionSelection(state);
+            HandleOptionValue(state);
+
+            base.Update(gameTime);
+        }
+
+        void HandleOptionValue(InputState state)
+        {
+            var offset = 0;
+            if (state.Left == InputButtonState.Pressed ||
+                state.RotateLeft == InputButtonState.Pressed)
+            {
+                offset--;
+            }
+            if (state.Right == InputButtonState.Pressed ||
+                state.Drop == InputButtonState.Pressed ||
+                state.Pause == InputButtonState.Pressed ||
+                state.RotateRight == InputButtonState.Pressed ||
+                state.Swap == InputButtonState.Pressed)
+            {
+                offset++;
+            }
+
+            if (offset == 0) return;
+
+            var option = _model.Options[_selectedOptionIndex];
+            switch (option)
+            {
+                case OptionToggle toggle:
+                    toggle.SelectedValue = !toggle.SelectedValue;
+                    break;
+
+                case OptionHeader header:
+                    if (header.Name == "Back")
+                    {
+                        Hide();
+                        _menu.Show();
+                    }
+                    if (header.Name == "Save")
+                    {
+                        _model.Commit();
+                        _options.Save();
+
+                        HandleGraphicsChange();
+
+                        Hide();
+                        _menu.Show();
+                    }
+                    break;
+
+                case OptionPercentage percentage:
+                    percentage.SelectedValue += offset;
+                    break;
+
+                case OptionItemList<string> stringList:
+                    stringList.Next(offset);
+                    break;
+
+                case OptionItemList<Resolution> resolutionList:
+                    resolutionList.Next(offset);
+                    break;
+            }
+        }
+
+        void HandleGraphicsChange()
+        {
+            var graphics = _options.Options.Graphics;
+
+            if (_manager.PreferredBackBufferWidth == graphics.Width &&
+                _manager.PreferredBackBufferHeight == graphics.Height &&
+                _manager.IsFullScreen == graphics.Fullscreen)
+            {
+                return;
+            }
+
+            _manager.PreferredBackBufferWidth = (int)graphics.Width;
+            _manager.PreferredBackBufferHeight = (int)graphics.Height;
+            _manager.IsFullScreen = graphics.Fullscreen;
+            _manager.ApplyChanges();
+        }
+
+        void HandleOptionSelection(InputState state)
+        {
             var offset = 0;
             if (state.Up == InputButtonState.Pressed)
             {
@@ -99,19 +360,14 @@ namespace Tetrominoes.Options
                 _selectedOptionIndex += offset;
                 if (_selectedOptionIndex < 0)
                 {
-                    _selectedOptionIndex = _options.Length - 1;
+                    _selectedOptionIndex = _model.Options.Count - 1;
                 }
-                else if (_selectedOptionIndex >= _options.Length)
+                else if (_selectedOptionIndex >= _model.Options.Count)
                 {
                     _selectedOptionIndex = 0;
                 }
                 _audio.Sound.Play(Sound.Move);
             }
-
-            // TODO allow changing options
-            // TODO allow going back (and saving options)
-
-            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -119,13 +375,13 @@ namespace Tetrominoes.Options
             GraphicsDevice.Clear(Color.White);
 
             var maxWidth = 0.0f;
-            for (var i = 0; i < _options.Length; i++)
+            for (var i = 0; i < _model.Options.Count; i++)
             {
                 var font = i == _selectedOptionIndex
                     ? _boldWeight
                     : _normalWeight;
 
-                var option = _options[i];
+                var option = _model.Options[i];
 
                 maxWidth = Math.Max(
                     font.MeasureString(option.Name).X,
@@ -135,25 +391,34 @@ namespace Tetrominoes.Options
 
             var pp = GraphicsDevice.PresentationParameters;
             var tx = Matrix.CreateTranslation(
-                (pp.BackBufferWidth - maxWidth) / 2,
-                _selectedOptionIndex * -64,
+                ((pp.BackBufferWidth - maxWidth) / 2) - 256,
+                384 + (_selectedOptionIndex * -64),
                 0
             );
             
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
             var pos = new Vector2();
-            for (var i = 0; i < _options.Length; i++)
+            for (var i = 0; i < _model.Options.Count; i++)
             {
                 var font = i == _selectedOptionIndex
                     ? _boldWeight
                     : _normalWeight;
 
-                var option = _options[i];
+                var option = _model.Options[i];
                 var measurement = font.MeasureString(option.Name);
 
+                pos.X = 0;
                 _spriteBatch.DrawString(
                     font,
                     option.Name,
+                    pos,
+                    Color.Black
+                );
+
+                pos.X = maxWidth + 64;
+                _spriteBatch.DrawString(
+                    font,
+                    option.ToString(),
                     pos,
                     Color.Black
                 );

@@ -10,5 +10,6 @@ namespace Tetrominoes.Options
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
+        public override string ToString() => SelectedValue ? "On" : "Off";
     }
 }

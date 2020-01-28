@@ -1,6 +1,7 @@
 #nullable disable
 
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Tetrominoes.Options
 {
@@ -12,6 +13,8 @@ namespace Tetrominoes.Options
             Load();
         }
 
+        public event Action<GameOptions> Updated;
+
         public GameOptions Options { get; private set; }
 
         public static OptionComponent AddTo(Game game)
@@ -22,32 +25,21 @@ namespace Tetrominoes.Options
             return component;
         }
 
-        //IMessageService _messageService;
-        //IBackgroundService _backgroundService;
-        public override void Initialize()
-        {
-            //_messageService = Game.Services.GetService<IMessageService>();
-            //_backgroundService = Game.Services.GetService<IBackgroundService>();
-
-            base.Initialize();
-        }
-
         void Load()
         {
             Options = GameOptions.FromConfigOrDefault();
+            Updated?.Invoke(Options);
         }
 
         public void Reload()
         {
-            //_backgroundService.QueueWork(Load);
+            Load();
         }
 
         public void Save()
         {
-            //_backgroundService.QueueWork(Options.Save);
-
-            //var msg = ObjectPool<OptionsUpdated>.Default.Rent();
-            //_messageService.Handle(msg);
+            Options.Save();
+            Updated?.Invoke(Options);
         }
     }
 }
