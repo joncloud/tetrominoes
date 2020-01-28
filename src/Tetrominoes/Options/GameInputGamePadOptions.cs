@@ -1,10 +1,11 @@
 using Microsoft.Xna.Framework;
 using Nett;
 using System;
+using Tetrominoes.Input;
 
 namespace Tetrominoes.Options
 {
-    public class GameInputGamePadOptions
+    public class GameInputGamePadOptions : IInput<GamePadButtonTypes>
     {
         // CS8618 is disabled, because the *Map properties are
         // initialized through the property setters.

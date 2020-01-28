@@ -1,10 +1,11 @@
 using Microsoft.Xna.Framework.Input;
 using Nett;
 using System;
+using Tetrominoes.Input;
 
 namespace Tetrominoes.Options
 {
-    public class GameInputKeyboardOptions
+    public class GameInputKeyboardOptions : IInput<Keys>
     {
         public GameInputKeyboardOptions()
         {

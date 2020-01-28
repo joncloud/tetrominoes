@@ -1,6 +1,6 @@
 namespace Tetrominoes.Input
 {
-    public struct InputState
+    public struct InputState : IInput<InputButtonState>
     {
         public InputButtonState Up { get; set; }
         public InputButtonState Down { get; set; }

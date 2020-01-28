@@ -104,9 +104,25 @@ namespace Tetrominoes.Options
                     _keyboard.Header,
                     _keyboard.Enabled,
                     _keyboard.Up,
+                    _keyboard.Down,
+                    _keyboard.Left,
+                    _keyboard.Right,
+                    _keyboard.RotateLeft,
+                    _keyboard.RotateRight,
+                    _keyboard.Drop,
+                    _keyboard.Swap,
+                    _keyboard.Pause,
                     _gamePad.Header,
                     _gamePad.Enabled,
-                    _gamePad.Up
+                    _gamePad.Up,
+                    _gamePad.Down,
+                    _gamePad.Left,
+                    _gamePad.Right,
+                    _gamePad.RotateLeft,
+                    _gamePad.RotateRight,
+                    _gamePad.Drop,
+                    _gamePad.Swap,
+                    _gamePad.Pause,
                 };
             }
 
@@ -130,7 +146,7 @@ namespace Tetrominoes.Options
                     _options = options ?? throw new ArgumentNullException(nameof(options));
                     Header = new OptionHeader("Graphics");
                     Resolution = new OptionItemList<Resolution>(
-                        "Resolution",
+                        " Resolution",
                         new Resolution(options.Width, options.Height),
                         new[] {
 
@@ -152,7 +168,7 @@ namespace Tetrominoes.Options
                             new Resolution(1280, 1024),
                         }
                     );
-                    Fullscreen = new OptionToggle("Fullscreen")
+                    Fullscreen = new OptionToggle(" Fullscreen")
                     {
                         SelectedValue = options.Fullscreen
                     };
@@ -177,8 +193,8 @@ namespace Tetrominoes.Options
                 {
                     _options = options ?? throw new ArgumentNullException(nameof(options));
                     Header = new OptionHeader("Audio");
-                    MusicVolume = new OptionPercentage("Music Volume", options.MusicVolume);
-                    SoundVolume = new OptionPercentage("Sound Volume", options.SoundVolume);
+                    MusicVolume = new OptionPercentage(" Music Volume", options.MusicVolume);
+                    SoundVolume = new OptionPercentage(" Sound Volume", options.SoundVolume);
                 }
 
                 public void Commit()
@@ -188,53 +204,101 @@ namespace Tetrominoes.Options
                 }
             }
 
-            class OptionInputKeyboardModel
+            class OptionInputKeyboardModel : IInput<OptionEnum<Keys>>
             {
                 readonly GameInputKeyboardOptions _options;
                 public OptionHeader Header { get; }
                 public OptionToggle Enabled { get; }
                 public OptionEnum<Keys> Up { get; }
+                public OptionEnum<Keys> Down { get; }
+                public OptionEnum<Keys> Left { get; }
+                public OptionEnum<Keys> Right { get; }
+                public OptionEnum<Keys> RotateLeft { get; }
+                public OptionEnum<Keys> RotateRight { get; }
+                public OptionEnum<Keys> Drop { get; }
+                public OptionEnum<Keys> Swap { get; }
+                public OptionEnum<Keys> Pause { get; }
 
                 public OptionInputKeyboardModel(GameInputKeyboardOptions options)
                 {
                     _options = options ?? throw new ArgumentNullException(nameof(options));
-                    Header = new OptionHeader("Keyboard");
-                    Enabled = new OptionToggle("Enabled")
+                    Header = new OptionHeader(" Keyboard");
+                    Enabled = new OptionToggle("  Enabled")
                     {
                         SelectedValue = options.Enabled
                     };
-                    Up = new OptionEnum<Keys>("Up", options.Up);
+                    Up = new OptionEnum<Keys>("  Up", options.Up);
+                    Down = new OptionEnum<Keys>("  Down", options.Down);
+                    Left = new OptionEnum<Keys>("  Left", options.Left);
+                    Right = new OptionEnum<Keys>("  Right", options.Right);
+                    RotateLeft = new OptionEnum<Keys>("  Rotate Left", options.RotateLeft);
+                    RotateRight = new OptionEnum<Keys>("  Rotate Right", options.RotateRight);
+                    Drop = new OptionEnum<Keys>("  Drop", options.Drop);
+                    Swap = new OptionEnum<Keys>("  Swap", options.Swap);
+                    Pause = new OptionEnum<Keys>("  Pause", options.Pause);
                 }
 
                 public void Commit()
                 {
                     _options.Enabled = Enabled.SelectedValue;
                     _options.Up = Up.SelectedValue;
+                    _options.Down = Down.SelectedValue;
+                    _options.Left = Left.SelectedValue;
+                    _options.Right = Right.SelectedValue;
+                    _options.RotateLeft = RotateLeft.SelectedValue;
+                    _options.RotateRight = RotateRight.SelectedValue;
+                    _options.Drop = Drop.SelectedValue;
+                    _options.Swap = Swap.SelectedValue;
+                    _options.Pause = Pause.SelectedValue;
                 }
             }
 
-            class OptionInputGamePadModel
+            class OptionInputGamePadModel : IInput<OptionEnum<GamePadButtonTypes>>
             {
                 readonly GameInputGamePadOptions _options;
                 public OptionHeader Header { get; }
                 public OptionToggle Enabled { get; }
                 public OptionEnum<GamePadButtonTypes> Up { get; }
+                public OptionEnum<GamePadButtonTypes> Down { get; }
+                public OptionEnum<GamePadButtonTypes> Left { get; }
+                public OptionEnum<GamePadButtonTypes> Right { get; }
+                public OptionEnum<GamePadButtonTypes> RotateLeft { get; }
+                public OptionEnum<GamePadButtonTypes> RotateRight { get; }
+                public OptionEnum<GamePadButtonTypes> Drop { get; }
+                public OptionEnum<GamePadButtonTypes> Swap { get; }
+                public OptionEnum<GamePadButtonTypes> Pause { get; }
 
                 public OptionInputGamePadModel(GameInputGamePadOptions options)
                 {
                     _options = options ?? throw new ArgumentNullException(nameof(options));
-                    Header = new OptionHeader("Gamepad");
-                    Enabled = new OptionToggle("Enabled")
+                    Header = new OptionHeader(" Gamepad");
+                    Enabled = new OptionToggle("  Enabled")
                     {
                         SelectedValue = options.Enabled
                     };
-                    Up = new OptionEnum<GamePadButtonTypes>("Up", options.Up);
+                    Up = new OptionEnum<GamePadButtonTypes>("  Up", options.Up);
+                    Down = new OptionEnum<GamePadButtonTypes>("  Down", options.Down);
+                    Left = new OptionEnum<GamePadButtonTypes>("  Left", options.Left);
+                    Right = new OptionEnum<GamePadButtonTypes>("  Right", options.Right);
+                    RotateLeft = new OptionEnum<GamePadButtonTypes>("  Rotate Left", options.RotateLeft);
+                    RotateRight = new OptionEnum<GamePadButtonTypes>("  Rotate Right", options.RotateRight);
+                    Drop = new OptionEnum<GamePadButtonTypes>("  Drop", options.Drop);
+                    Swap = new OptionEnum<GamePadButtonTypes>("  Swap", options.Swap);
+                    Pause = new OptionEnum<GamePadButtonTypes>("  Pause", options.Pause);
                 }
 
                 public void Commit()
                 {
                     _options.Enabled = Enabled.SelectedValue;
                     _options.Up = Up.SelectedValue;
+                    _options.Down = Down.SelectedValue;
+                    _options.Left = Left.SelectedValue;
+                    _options.Right = Right.SelectedValue;
+                    _options.RotateLeft = RotateLeft.SelectedValue;
+                    _options.RotateRight = RotateRight.SelectedValue;
+                    _options.Drop = Drop.SelectedValue;
+                    _options.Swap = Swap.SelectedValue;
+                    _options.Pause = Pause.SelectedValue;
                 }
             }
         }
@@ -391,7 +455,7 @@ namespace Tetrominoes.Options
 
             var pp = GraphicsDevice.PresentationParameters;
             var tx = Matrix.CreateTranslation(
-                ((pp.BackBufferWidth - maxWidth) / 2) - 256,
+                ((pp.BackBufferWidth - maxWidth) / 2) - 384,
                 384 + (_selectedOptionIndex * -64),
                 0
             );
