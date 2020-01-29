@@ -8,6 +8,13 @@ param(
     $GitRef
 )
 
+If ($GitRef.StartsWith('refs/heads/')) {
+    $GitRef = $GitRef.Substring(11)
+}
+If ($GitRef.StartsWith('refs/tags/')) {
+    $GitRef = $GitRef.Substring(10)
+}
+
 $Path = Join-Path $PSScriptRoot 'src/Tetrominoes/AppVersion.cs'
 
 $Content = Get-Content -Raw -Path $Path
