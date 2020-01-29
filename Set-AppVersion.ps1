@@ -19,6 +19,6 @@ $Path = Join-Path $PSScriptRoot 'src/Tetrominoes/AppVersion.cs'
 
 $Content = Get-Content -Raw -Path $Path
 $Content = $Content.Replace('DateTime.UtcNow.ToString("O")', "`"${BuildDate}`"")
-$Content = $Content.Replace('CommitHash = "local"', "CommitHash = `"${GitRef}`"")
+$Content = $Content.Replace('GitRef = "local"', "GitRef = `"${GitRef}`"")
 
 $Content | Set-Content -Path $Path
