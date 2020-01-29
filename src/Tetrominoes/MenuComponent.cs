@@ -136,6 +136,14 @@ namespace Tetrominoes
         {
             GraphicsDevice.Clear(Color.White);
 
+            RenderMenu();
+            RenderAppVersion();
+
+            base.Draw(gameTime);
+        }
+
+        void RenderMenu()
+        {
             var maxWidth = 0.0f;
             for (var i = 0; i < _options.Length; i++)
             {
@@ -175,8 +183,24 @@ namespace Tetrominoes
                 );
             }
             _spriteBatch.End();
+        }
 
-            base.Draw(gameTime);
+        void RenderAppVersion()
+        {
+            var pp = GraphicsDevice.PresentationParameters;
+            var tx = Matrix.CreateScale(0.5f, 0.5f, 1) * Matrix.CreateTranslation(
+                16,
+                (pp.BackBufferHeight - 48),
+                0
+            );
+            _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
+            _spriteBatch.DrawString(
+                _normalWeight,
+                AppVersion.Display,
+                Vector2.Zero,
+                Color.Black
+            );
+            _spriteBatch.End();
         }
     }
 }

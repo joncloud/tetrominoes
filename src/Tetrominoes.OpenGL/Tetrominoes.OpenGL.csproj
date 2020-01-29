@@ -7,6 +7,9 @@
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Game.ico</ApplicationIcon>
+    <Version>0.0.0</Version>
+    <VersionPrefix>v</VersionPrefix>
+    <VersionSuffix>local</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>

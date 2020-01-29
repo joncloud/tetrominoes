@@ -15,6 +15,9 @@ jobs:
       with:
         dotnet-version: 3.1.101
 
+    - name: Set app version
+      run: powershell.exe -Command "./SetAppVersion.ps1 -BuildDate ((Get-Date).ToString('s')) -GitRef '${{ github.ref }}'"
+
     - name: Test with dotnet
       run: dotnet test --configuration Release
       working-directory: tests/Tetrominoes.Tests
