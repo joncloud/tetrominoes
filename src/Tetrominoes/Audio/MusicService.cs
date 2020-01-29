@@ -29,7 +29,7 @@ namespace Tetrominoes.Audio
 
         public void Resume()
         {
-            MediaPlayer.Resume();
+            //MediaPlayer.Resume();
         }
 
         public MusicTrack? CurrentTrack { get; private set; }
@@ -44,7 +44,7 @@ namespace Tetrominoes.Audio
 
         public void Pause()
         {
-            MediaPlayer.Stop();
+            //MediaPlayer.Stop();
         }
     }
 }

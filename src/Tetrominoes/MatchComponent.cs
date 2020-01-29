@@ -163,11 +163,27 @@ namespace Tetrominoes
             };
         }
 
+        static float GetMusicPitchForRowHeight(int rowHeight)
+        {
+            // As row height gets closer to the top (0)
+            // rapidly increase the y value.
+            var x = 1 - rowHeight / 32.0f;
+
+            // (2^(2x-2))*2
+            var y = (float)(Math.Pow(2, (2 * x) - 2) * x);
+
+            // Make sure to clamp to prevent an exception when going beyond 1.0f.
+            return MathHelper.Clamp(y, 0.0f, 1.0f);
+        }
+
         void Score_RowsCleared(MatchScore score, int rowsCleared)
         {
             var highestRow = CalculateHighestRow(score.Match.Grid);
             _backgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
             _audio.Sound.Play(Sound.RowClear);
+            _audio.Music.CurrentTrack?.SetPitch(
+                GetMusicPitchForRowHeight(highestRow)
+            );
         }
 
         void Score_PieceLocked(MatchScore score, TetrominoPiece piece)
@@ -175,6 +191,9 @@ namespace Tetrominoes
             var highestRow = CalculateHighestRow(score.Match.Grid);
             _backgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
             _audio.Sound.Play(Sound.Drop);
+            _audio.Music.CurrentTrack?.SetPitch(
+                GetMusicPitchForRowHeight(highestRow)
+            );
         }
 
         void Score_LevelChanged(MatchScore score)
