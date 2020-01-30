@@ -45,7 +45,7 @@ jobs:
 
     - name: Create nsis installer
       if: startsWith(github.ref, 'refs/tags/v')
-      uses: joncloud/nsis-action@v1
+      uses: joncloud/makensis-action@v1
 
     - name: Create GitHub release
       uses: actions/create-release@v1
