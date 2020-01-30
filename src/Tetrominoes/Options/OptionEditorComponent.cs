@@ -436,18 +436,26 @@ namespace Tetrominoes.Options
 
             if (offset != 0)
             {
-                _selectedOptionIndex += offset;
-                if (_selectedOptionIndex < 0)
+                do
                 {
-                    _selectedOptionIndex = _model.Options.Count - 1;
-                }
-                else if (_selectedOptionIndex >= _model.Options.Count)
-                {
-                    _selectedOptionIndex = 0;
-                }
+                    _selectedOptionIndex += offset;
+                    if (_selectedOptionIndex < 0)
+                    {
+                        _selectedOptionIndex = _model.Options.Count - 1;
+                    }
+                    else if (_selectedOptionIndex >= _model.Options.Count)
+                    {
+                        _selectedOptionIndex = 0;
+                    }
+                } while (ShouldSkipOption(_model.Options[_selectedOptionIndex]));
                 _audio.Sound.Play(Sound.Move);
             }
         }
+
+        static bool ShouldSkipOption(IOption option) =>
+            option is OptionHeader header &&
+                header.Name != "Back" &&
+                header.Name != "Save";
 
         public override void Draw(GameTime gameTime)
         {
