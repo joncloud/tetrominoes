@@ -199,7 +199,7 @@ namespace Tetrominoes
         void Score_LevelChanged(MatchScore score)
         {
             _backgroundEffect.Effect = Game.Content.Load<Effect>(
-                score.Match.Random.NextElement(_effectNames)
+                score.Match.Random.NextElement(BackgroundEffect.EffectNames)
             );
             _backgroundEffect.Formula.Frequency = score.Level switch
             {
@@ -227,16 +227,6 @@ namespace Tetrominoes
         SpriteFont _boldWeightFont;
         BackgroundEffect _backgroundEffect;
         const int TileWidth = 8;
-        static string[] _effectNames = new[]
-        {
-            "Effects/Hypocycloid",
-            "Effects/HorizontalCross",
-            "Effects/VerticalCross",
-            "Effects/Epicycloid",
-            "Effects/Cycloid",
-            "Effects/LissajousCurve",
-            "Effects/Spirograph"
-        };
         protected override void LoadContent()
         {
             _normalWeightFont = Game.Content.Load<SpriteFont>("Fonts/UI");
@@ -257,7 +247,7 @@ namespace Tetrominoes
 
             _backgroundEffect = new BackgroundEffect(
                 Game.Content.Load<Effect>(
-                    _effectNames[0]
+                    BackgroundEffect.EffectNames[0]
                 ),
                 new BackgroundEffectFormula(
                     0.2f,

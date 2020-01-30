@@ -71,17 +71,99 @@ namespace Tetrominoes
         SpriteBatch _spriteBatch;
         SpriteFont _normalWeight;
         SpriteFont _boldWeight;
+        RenderTarget2D _boardBuffer;
+        Random _random;
+        Texture2D _tileTexture;
+        BackgroundEffect _backgroundEffect;
+        const int TileWidth = 8;
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _normalWeight = Game.Content.Load<SpriteFont>("Fonts/UI");
             _boldWeight = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
+            _tileTexture = Game.Content.Load<Texture2D>("Textures/Tiles");
+            _backgroundEffect = new BackgroundEffect(
+                Game.Content.Load<Effect>(
+                    BackgroundEffect.EffectNames[0]
+                ),
+                new BackgroundEffectFormula(
+                    0.2f,
+                    0.5f,
+                    0.001f
+                )
+            );
+
+#if DEBUG
+            _random = new Random(0);
+#else
+            _random = new Random();
+#endif
+            _boardBuffer = new RenderTarget2D(
+                GraphicsDevice,
+                (MatchGrid.Width + 4) * TileWidth,
+                (MatchGrid.Height + 2) * TileWidth
+            );
+            RandomizeGrid();
 
             base.LoadContent();
         }
 
+        static readonly Color[] _tetrominoColors = new[]
+        {
+            Color.Transparent,
+            Color.Cyan,
+            Color.Yellow,
+            Color.Magenta,
+            Color.Blue,
+            Color.Orange,
+            Color.Lime,
+            Color.Red
+        };
+        TimeSpan _tillNextRandom;
+        void RandomizeGrid()
+        {
+            _backgroundEffect.Effect = Game.Content.Load<Effect>(
+                _random.NextElement(BackgroundEffect.EffectNames)
+            );
+            _tillNextRandom = TimeSpan.FromSeconds(15);
+
+            var tx = Matrix.CreateTranslation(16, 0, 0);
+
+            GraphicsDevice.SetRenderTarget(_boardBuffer);
+            GraphicsDevice.Clear(Color.White);
+            _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
+
+            for (var i = 0; i < MatchGrid.Size; i++)
+            {
+                if (_random.NextChance(25)) continue;
+                var type = _random.NextEnum<TetrominoPiece>();
+                if (type == TetrominoPiece.Empty) continue;
+
+                var color = _tetrominoColors[(int)type];
+
+                var point = MatchGrid.GetPosition(i).ToVector2() * TileWidth;
+                _spriteBatch.Draw(
+                    _tileTexture,
+                    point,
+                    new Rectangle(0, 0, TileWidth, TileWidth),
+                    color
+                );
+            }
+
+            _spriteBatch.End();
+
+            GraphicsDevice.SetRenderTarget(null);
+        }
+
         public override void Update(GameTime gameTime)
         {
+            _backgroundEffect.Update(gameTime);
+            _tillNextRandom -= gameTime.ElapsedGameTime;
+            if (_tillNextRandom <= TimeSpan.Zero)
+            {
+                RandomizeGrid();
+            }
+
             var state = _input.State;
 
             var offset = 0;
@@ -136,10 +218,33 @@ namespace Tetrominoes
         {
             GraphicsDevice.Clear(Color.White);
 
+            RenderBackground();
             RenderMenu();
             RenderAppVersion();
 
             base.Draw(gameTime);
+        }
+
+        void RenderBackground()
+        {
+            var pp = GraphicsDevice.PresentationParameters;
+            var scaleX = pp.BackBufferWidth / _boardBuffer.Width;
+            var scaleY = pp.BackBufferHeight / _boardBuffer.Height;
+            var scale = Matrix.CreateScale(scaleX, scaleX, 1);
+
+            GraphicsDevice.SetRenderTarget(default);
+            GraphicsDevice.Clear(Color.White);
+            _spriteBatch.Begin(
+                transformMatrix: scale,
+                samplerState: SamplerState.PointWrap,
+                effect: _backgroundEffect.Effect
+            );
+            _spriteBatch.Draw(
+                _boardBuffer,
+                Vector2.Zero,
+                new Color(Color.White, 0.25f)
+            );
+            _spriteBatch.End();
         }
 
         void RenderMenu()

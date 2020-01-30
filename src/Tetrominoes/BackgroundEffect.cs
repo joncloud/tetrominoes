@@ -1,11 +1,22 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Tetrominoes
 {
     public class BackgroundEffect
     {
+        public static IReadOnlyList<string> EffectNames { get; } = new[]
+        {
+            "Effects/Hypocycloid",
+            "Effects/HorizontalCross",
+            "Effects/VerticalCross",
+            "Effects/Epicycloid",
+            "Effects/Cycloid",
+            "Effects/LissajousCurve",
+            "Effects/Spirograph"
+        };
         Effect _effect;
         public Effect Effect
         {
