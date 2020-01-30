@@ -351,21 +351,25 @@ namespace Tetrominoes.Options
 
             if (offset == 0) return;
 
+            var shouldPlay = false;
             var option = _model.Options[_selectedOptionIndex];
             switch (option)
             {
                 case OptionToggle toggle:
+                    shouldPlay = true;
                     toggle.SelectedValue = !toggle.SelectedValue;
                     break;
 
                 case OptionHeader header:
                     if (header.Name == "Back")
                     {
+                        shouldPlay = true;
                         Hide();
                         _menu.Show();
                     }
                     if (header.Name == "Save")
                     {
+                        shouldPlay = true;
                         _model.Commit();
                         _options.Save();
 
@@ -377,16 +381,27 @@ namespace Tetrominoes.Options
                     break;
 
                 case OptionPercentage percentage:
+                    shouldPlay = true;
                     percentage.SelectedValue += offset;
                     break;
 
                 case OptionItemList<string> stringList:
+                    shouldPlay = true;
                     stringList.Next(offset);
                     break;
 
                 case OptionItemList<Resolution> resolutionList:
+                    shouldPlay = true;
                     resolutionList.Next(offset);
                     break;
+            }
+            if (shouldPlay)
+            {
+                _audio.Sound.Play(
+                    offset < 0
+                        ? Sound.RotateLeft
+                        : Sound.RotateRight
+                );
             }
         }
 

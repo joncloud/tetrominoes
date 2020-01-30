@@ -208,6 +208,7 @@ namespace Tetrominoes
             );
             if (chosenState == InputButtonState.Pressed)
             {
+                _audio.Sound.Play(Sound.Drop);
                 _options[_selectedOptionIndex].Choose();
             }
 
