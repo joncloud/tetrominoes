@@ -355,3 +355,5 @@ MigrationBackup/
 *.xnb
 *.mgcontent
 
+# NSIS
+*.exe

@@ -37,10 +37,15 @@ jobs:
         path: src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish
 
     - name: Archive asset
+      if: startsWith(github.ref, 'refs/tags/v')
       run: |
         7z a OpenGL.zip ./src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish/*
         7z a OpenGL.tar ./src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1/publish/*
         7z a OpenGL.tar.gz OpenGL.tar
+
+    - name: Create nsis installer
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: joncloud/nsis-action@v1
 
     - name: Create GitHub release
       uses: actions/create-release@v1
@@ -57,6 +62,17 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
+
+    - name: Upload GitHub release asset exe installer
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./OpenGL.exe
+        asset_name: OpenGL.exe
+        asset_content_type: application/zip
 
     - name: Upload GitHub release asset zip
       if: startsWith(github.ref, 'refs/tags/v')
