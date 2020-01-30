@@ -371,6 +371,7 @@ namespace Tetrominoes
                     Enabled = Visible = false;
                     _menu.Show();
                     _state = MatchState.Playing;
+                    _audio.Music.Pause();
                     return;
                 }
             }
