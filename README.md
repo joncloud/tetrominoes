@@ -12,16 +12,22 @@
 
 ## Getting Started
 ### Requirements
-* [.NET Core 3.1 SDK][]
+* [.NET Core 3.1 Runtime][]
 
-[.NET Core 3.1 SDK]: https://dot.net
+[.NET Core 3.1 Runtime]: https://dot.net
 
 ### Installation
+#### Windows
 1. Navigate to the [Latest Release][]
-2. Download `OpenGL.zip`
+2. Download `OpenGL.exe`
+3. Run `OpenGL.exe` to install
+4. Open Tetrominoes.OpenGL from the Start Menu
+
+#### macOS and Linux
+1. Navigate to the [Latest Release][]
+2. Download `OpenGL.tar.gz`
 3. Extract the archive to any location on your computer
-4. Run `Tetrominoes.OpenGL.exe`
-    - On Linux and MacOS platforms run `dotnet Tetrominoes.OpenGL.exe`
+4. Run `tetrominoes.sh`
 
 [Latest Release]: https://github.com/joncloud/tetrominoes/releases
 
