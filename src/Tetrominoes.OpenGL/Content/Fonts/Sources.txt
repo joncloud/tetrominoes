@@ -2,3 +2,6 @@ https://www.jetbrains.com/lp/mono/
 * JetBrainsMono-Bold.ttf
 * JetBrainsMono-ExtraBold.ttf
 * JetBrainsMono-Regular.ttf
+
+https://celechii.itch.io/cat-pentagram-font-icon-pack
+* CatPentagram.ttf

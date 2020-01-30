@@ -276,16 +276,39 @@ namespace Tetrominoes.Options
                     {
                         SelectedValue = options.Enabled
                     };
-                    Up = new OptionEnum<GamePadButtonTypes>("  Up", options.Up);
-                    Down = new OptionEnum<GamePadButtonTypes>("  Down", options.Down);
-                    Left = new OptionEnum<GamePadButtonTypes>("  Left", options.Left);
-                    Right = new OptionEnum<GamePadButtonTypes>("  Right", options.Right);
-                    RotateLeft = new OptionEnum<GamePadButtonTypes>("  Rotate Left", options.RotateLeft);
-                    RotateRight = new OptionEnum<GamePadButtonTypes>("  Rotate Right", options.RotateRight);
-                    Drop = new OptionEnum<GamePadButtonTypes>("  Drop", options.Drop);
-                    Swap = new OptionEnum<GamePadButtonTypes>("  Swap", options.Swap);
-                    Pause = new OptionEnum<GamePadButtonTypes>("  Pause", options.Pause);
+                    Up = new OptionEnum<GamePadButtonTypes>("  Up", options.Up, ConvertToString);
+                    Down = new OptionEnum<GamePadButtonTypes>("  Down", options.Down, ConvertToString);
+                    Left = new OptionEnum<GamePadButtonTypes>("  Left", options.Left, ConvertToString);
+                    Right = new OptionEnum<GamePadButtonTypes>("  Right", options.Right, ConvertToString);
+                    RotateLeft = new OptionEnum<GamePadButtonTypes>("  Rotate Left", options.RotateLeft, ConvertToString);
+                    RotateRight = new OptionEnum<GamePadButtonTypes>("  Rotate Right", options.RotateRight, ConvertToString);
+                    Drop = new OptionEnum<GamePadButtonTypes>("  Drop", options.Drop, ConvertToString);
+                    Swap = new OptionEnum<GamePadButtonTypes>("  Swap", options.Swap, ConvertToString);
+                    Pause = new OptionEnum<GamePadButtonTypes>("  Pause", options.Pause, ConvertToString);
                 }
+
+                static string ConvertToString(GamePadButtonTypes type) =>
+                    _map[type];
+                static readonly Dictionary<GamePadButtonTypes, string> _map = 
+                    new Dictionary<GamePadButtonTypes, string>
+                    {
+                        // TODO validate these
+                        [GamePadButtonTypes.ButtonsA] = "×",
+                        [GamePadButtonTypes.ButtonsB] = "Ö",
+                        [GamePadButtonTypes.ButtonsBack] = "A",
+                        [GamePadButtonTypes.ButtonsBigButton] = "Ï",
+                        [GamePadButtonTypes.ButtonsLeftShoulder] = "Í",
+                        [GamePadButtonTypes.ButtonsLeftStick] = "Ú",
+                        [GamePadButtonTypes.ButtonsRightShoulder] = "Î",
+                        [GamePadButtonTypes.ButtonsRightStick] = "Û",
+                        [GamePadButtonTypes.ButtonsStart] = "A",
+                        [GamePadButtonTypes.ButtonsX] = "Ô",
+                        [GamePadButtonTypes.ButtonsY] = "Õ",
+                        [GamePadButtonTypes.DPadDown] = "Á",
+                        [GamePadButtonTypes.DPadLeft] = "Â",
+                        [GamePadButtonTypes.DPadRight] = "Ã",
+                        [GamePadButtonTypes.DPadUp] = "À"
+                    };
 
                 public void Commit()
                 {
@@ -306,11 +329,13 @@ namespace Tetrominoes.Options
         SpriteBatch _spriteBatch;
         SpriteFont _normalWeight;
         SpriteFont _boldWeight;
+        SpriteFont _gamepad;
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _normalWeight = Game.Content.Load<SpriteFont>("Fonts/UI");
             _boldWeight = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
+            _gamepad = Game.Content.Load<SpriteFont>("Fonts/Gamepad");
 
             base.LoadContent();
         }
@@ -504,7 +529,9 @@ namespace Tetrominoes.Options
 
                 pos.X = maxWidth + 64;
                 _spriteBatch.DrawString(
-                    font,
+                    option is OptionEnum<GamePadButtonTypes>
+                        ? _gamepad
+                        : font,
                     option.ToString(),
                     pos,
                     Color.Black

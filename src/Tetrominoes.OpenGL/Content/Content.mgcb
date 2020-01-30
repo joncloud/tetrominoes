@@ -54,6 +54,13 @@
 /processorParam:DebugMode=Auto
 /build:Effects/VerticalCross.hlsl
 
+#begin Fonts/Gamepad.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Gamepad.spritefont
+
 #begin Fonts/UI-Bold.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
