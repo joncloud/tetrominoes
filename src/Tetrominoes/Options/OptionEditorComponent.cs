@@ -292,16 +292,15 @@ namespace Tetrominoes.Options
                 static readonly Dictionary<GamePadButtonTypes, string> _map = 
                     new Dictionary<GamePadButtonTypes, string>
                     {
-                        // TODO validate these
                         [GamePadButtonTypes.ButtonsA] = "×",
                         [GamePadButtonTypes.ButtonsB] = "Ö",
-                        [GamePadButtonTypes.ButtonsBack] = "A",
+                        [GamePadButtonTypes.ButtonsBack] = "Ï",
                         [GamePadButtonTypes.ButtonsBigButton] = "Ï",
                         [GamePadButtonTypes.ButtonsLeftShoulder] = "Í",
                         [GamePadButtonTypes.ButtonsLeftStick] = "Ú",
                         [GamePadButtonTypes.ButtonsRightShoulder] = "Î",
                         [GamePadButtonTypes.ButtonsRightStick] = "Û",
-                        [GamePadButtonTypes.ButtonsStart] = "A",
+                        [GamePadButtonTypes.ButtonsStart] = "Ð",
                         [GamePadButtonTypes.ButtonsX] = "Ô",
                         [GamePadButtonTypes.ButtonsY] = "Õ",
                         [GamePadButtonTypes.DPadDown] = "Á",
