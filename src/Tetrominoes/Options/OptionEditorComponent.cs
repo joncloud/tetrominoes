@@ -483,8 +483,6 @@ namespace Tetrominoes.Options
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
-
             var maxWidth = 0.0f;
             for (var i = 0; i < _model.Options.Count; i++)
             {

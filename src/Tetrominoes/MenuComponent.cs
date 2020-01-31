@@ -39,12 +39,14 @@ namespace Tetrominoes
         IMatchService _match;
         IAudioService _audio;
         IOptionEditorService _optionEditor;
+        IBackgroundService _background;
         public override void Initialize()
         {
             _input = Game.Services.GetService<IInputService>();
             _match = Game.Services.GetService<IMatchService>();
             _audio = Game.Services.GetService<IAudioService>();
             _optionEditor = Game.Services.GetService<IOptionEditorService>();
+            _background = Game.Services.GetService<IBackgroundService>();
 
             _options = new[]
             {
@@ -71,10 +73,8 @@ namespace Tetrominoes
         SpriteBatch _spriteBatch;
         SpriteFont _normalWeight;
         SpriteFont _boldWeight;
-        RenderTarget2D _boardBuffer;
         Random _random;
         Texture2D _tileTexture;
-        BackgroundEffect _backgroundEffect;
         const int TileWidth = 8;
         protected override void LoadContent()
         {
@@ -82,27 +82,12 @@ namespace Tetrominoes
             _normalWeight = Game.Content.Load<SpriteFont>("Fonts/UI");
             _boldWeight = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
             _tileTexture = Game.Content.Load<Texture2D>("Textures/Tiles");
-            _backgroundEffect = new BackgroundEffect(
-                Game.Content.Load<Effect>(
-                    BackgroundEffect.EffectNames[0]
-                ),
-                new BackgroundEffectFormula(
-                    0.2f,
-                    0.5f,
-                    0.001f
-                )
-            );
 
 #if DEBUG
             _random = new Random(0);
 #else
             _random = new Random();
 #endif
-            _boardBuffer = new RenderTarget2D(
-                GraphicsDevice,
-                (MatchGrid.Width + 4) * TileWidth,
-                (MatchGrid.Height + 2) * TileWidth
-            );
             RandomizeGrid();
 
             base.LoadContent();
@@ -122,14 +107,14 @@ namespace Tetrominoes
         TimeSpan _tillNextRandom;
         void RandomizeGrid()
         {
-            _backgroundEffect.Effect = Game.Content.Load<Effect>(
+            _background.BackgroundEffect.Effect = Game.Content.Load<Effect>(
                 _random.NextElement(BackgroundEffect.EffectNames)
             );
             _tillNextRandom = TimeSpan.FromSeconds(15);
 
             var tx = Matrix.CreateTranslation(16, 0, 0);
 
-            GraphicsDevice.SetRenderTarget(_boardBuffer);
+            GraphicsDevice.SetRenderTarget(_background.Board);
             GraphicsDevice.Clear(Color.White);
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
 
@@ -157,7 +142,6 @@ namespace Tetrominoes
 
         public override void Update(GameTime gameTime)
         {
-            _backgroundEffect.Update(gameTime);
             _tillNextRandom -= gameTime.ElapsedGameTime;
             if (_tillNextRandom <= TimeSpan.Zero)
             {
@@ -217,35 +201,10 @@ namespace Tetrominoes
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
-
-            RenderBackground();
             RenderMenu();
             RenderAppVersion();
 
             base.Draw(gameTime);
-        }
-
-        void RenderBackground()
-        {
-            var pp = GraphicsDevice.PresentationParameters;
-            var scaleX = pp.BackBufferWidth / _boardBuffer.Width;
-            var scaleY = pp.BackBufferHeight / _boardBuffer.Height;
-            var scale = Matrix.CreateScale(scaleX, scaleX, 1);
-
-            GraphicsDevice.SetRenderTarget(default);
-            GraphicsDevice.Clear(Color.White);
-            _spriteBatch.Begin(
-                transformMatrix: scale,
-                samplerState: SamplerState.PointWrap,
-                effect: _backgroundEffect.Effect
-            );
-            _spriteBatch.Draw(
-                _boardBuffer,
-                Vector2.Zero,
-                new Color(Color.White, 0.25f)
-            );
-            _spriteBatch.End();
         }
 
         void RenderMenu()

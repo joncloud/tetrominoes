@@ -30,11 +30,13 @@ namespace Tetrominoes
         IInputService _input;
         IAudioService _audio;
         IMenuService _menu;
+        IBackgroundService _background;
         public override void Initialize()
         {
             _input = Game.Services.GetService<IInputService>();
             _audio = Game.Services.GetService<IAudioService>();
             _menu = Game.Services.GetService<IMenuService>();
+            _background = Game.Services.GetService<IBackgroundService>();
             base.Initialize();
         }
 
@@ -179,7 +181,7 @@ namespace Tetrominoes
         void Score_RowsCleared(MatchScore score, int rowsCleared)
         {
             var highestRow = CalculateHighestRow(score.Match.Grid);
-            _backgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
+            _background.BackgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
             _audio.Sound.Play(Sound.RowClear);
             _audio.Music.CurrentTrack?.SetPitch(
                 GetMusicPitchForRowHeight(highestRow)
@@ -189,7 +191,7 @@ namespace Tetrominoes
         void Score_PieceLocked(MatchScore score, TetrominoPiece piece)
         {
             var highestRow = CalculateHighestRow(score.Match.Grid);
-            _backgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
+            _background.BackgroundEffect.Formula.Speed = GetBackgroundSpeedForRowHeight(highestRow);
             _audio.Sound.Play(Sound.Drop);
             _audio.Music.CurrentTrack?.SetPitch(
                 GetMusicPitchForRowHeight(highestRow)
@@ -198,10 +200,10 @@ namespace Tetrominoes
 
         void Score_LevelChanged(MatchScore score)
         {
-            _backgroundEffect.Effect = Game.Content.Load<Effect>(
+            _background.BackgroundEffect.Effect = Game.Content.Load<Effect>(
                 score.Match.Random.NextElement(BackgroundEffect.EffectNames)
             );
-            _backgroundEffect.Formula.Frequency = score.Level switch
+            _background.BackgroundEffect.Formula.Frequency = score.Level switch
             {
                 1 => 0.5f,
                 2 => 0.55f,
@@ -220,12 +222,10 @@ namespace Tetrominoes
         Texture2D _tileTexture;
         RenderTarget2D _backgroundTexture;
         RenderTarget2D _previewTexture;
-        RenderTarget2D _boardBuffer;
         SpriteBatch _spriteBatch;
         TetrominoRenderer _tetrominoRenderer;
         SpriteFont _normalWeightFont;
         SpriteFont _boldWeightFont;
-        BackgroundEffect _backgroundEffect;
         const int TileWidth = 8;
         protected override void LoadContent()
         {
@@ -236,24 +236,6 @@ namespace Tetrominoes
             _tetrominoRenderer = new TetrominoRenderer(
                 _tileTexture,
                 _spriteBatch
-            );
-
-            _boardBuffer = new RenderTarget2D(
-                GraphicsDevice,
-                (MatchGrid.Width + 4) * TileWidth,
-                (MatchGrid.Height + 2) * TileWidth
-            );
-
-
-            _backgroundEffect = new BackgroundEffect(
-                Game.Content.Load<Effect>(
-                    BackgroundEffect.EffectNames[0]
-                ),
-                new BackgroundEffectFormula(
-                    0.2f,
-                    0.5f,
-                    0.001f
-                )
             );
 
             CreatePreviewTexture();
@@ -378,7 +360,6 @@ namespace Tetrominoes
 
             if (_state != MatchState.Playing)
             {
-                _backgroundEffect.Update(gameTime);
                 return;
             }
 
@@ -419,7 +400,6 @@ namespace Tetrominoes
             {
                 _audio.Music.Pause();
             }
-            _backgroundEffect.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -440,7 +420,6 @@ namespace Tetrominoes
             var totalWidth = pp.BackBufferWidth / 4;
             var gridWidth = (MatchGrid.Width + 4) * TileWidth;
 
-            RenderBackground();
             RenderBoard();
             RenderBuffer(scale, totalWidth, gridWidth);
             RenderHud(scale, totalWidth, gridWidth);
@@ -456,34 +435,12 @@ namespace Tetrominoes
             base.Draw(gameTime);
         }
 
-        void RenderBackground()
-        {
-            var pp = GraphicsDevice.PresentationParameters;
-            var scaleX = pp.BackBufferWidth / _boardBuffer.Width;
-            var scaleY = pp.BackBufferHeight / _boardBuffer.Height;
-            var scale = Matrix.CreateScale(scaleX, scaleX, 1);
-
-            GraphicsDevice.SetRenderTarget(default);
-            GraphicsDevice.Clear(Color.White);
-            _spriteBatch.Begin(
-                transformMatrix: scale,
-                samplerState: SamplerState.PointWrap,
-                effect: _backgroundEffect.Effect
-            );
-            _spriteBatch.Draw(
-                _boardBuffer, 
-                Vector2.Zero,
-                new Color(Color.White, 0.25f)
-            );
-            _spriteBatch.End();
-        }
-
         void RenderBoard()
         {
             var tx = Matrix.CreateTranslation(16, 0, 0);
 
             // Buffer the board to a texture to use it as a background.
-            GraphicsDevice.SetRenderTarget(_boardBuffer);
+            GraphicsDevice.SetRenderTarget(_background.Board);
             GraphicsDevice.Clear(Color.White);
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
 
@@ -523,7 +480,7 @@ namespace Tetrominoes
             // Draw the buffer to the screen.
             GraphicsDevice.SetRenderTarget(default);
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(_boardBuffer, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(_background.Board, Vector2.Zero, Color.White);
             _spriteBatch.End();
         }
 
@@ -655,7 +612,7 @@ namespace Tetrominoes
         {
             Span<Vector2> measurements = stackalloc Vector2[lines.Length];
 
-            var maxWidth = 0.0f; // _boldWeightFont.MeasureString(text).X;
+            var maxWidth = 0.0f;
             for (var i = 0; i < lines.Length; i++)
             {
                 var measurement = 
