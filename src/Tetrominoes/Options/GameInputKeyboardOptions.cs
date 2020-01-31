@@ -49,7 +49,8 @@ namespace Tetrominoes.Options
 
             var options = new GameInputKeyboardOptions();
 
-            if (table.TryGetTable("input.keyboard", out var keyboard))
+            if (table.TryGetTable("input", out var input) &&
+                input.TryGetTable("keyboard", out var keyboard))
             {
                 if (keyboard.TryGetValue("enabled", out bool enabled))
                     options.Enabled = enabled;

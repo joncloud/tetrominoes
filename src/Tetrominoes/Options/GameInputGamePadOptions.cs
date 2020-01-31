@@ -165,7 +165,8 @@ namespace Tetrominoes.Options
 
             var options = new GameInputGamePadOptions();
 
-            if (table.TryGetTable("input.gamepad", out var gamepad))
+            if (table.TryGetTable("input", out var input) &&
+                input.TryGetTable("gamepad", out var gamepad))
             {
                 if (gamepad.TryGetValue("enabled", out bool enabled))
                     options.Enabled = enabled;
