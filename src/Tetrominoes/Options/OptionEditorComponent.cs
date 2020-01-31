@@ -380,6 +380,78 @@ namespace Tetrominoes.Options
             bool TryUpdate();
         }
 
+        class GamePadInputMonitor : IInputMonitor
+        {
+            readonly PlayerIndex _index;
+            readonly OptionEnum<GamePadButtonTypes> _option;
+            public GamePadInputMonitor(PlayerIndex index, OptionEnum<GamePadButtonTypes> option)
+            {
+                _index = index;
+                _option = option ?? throw new ArgumentNullException(nameof(option));
+            }
+
+            GamePadState _last;
+            GamePadState _current;
+            static Buttons[] _available = new[]
+            {
+                Buttons.DPadDown,
+                Buttons.DPadLeft,
+                Buttons.DPadRight,
+                Buttons.DPadUp,
+                Buttons.Start,
+                Buttons.Back,
+                Buttons.LeftStick,
+                Buttons.RightStick,
+                Buttons.LeftShoulder,
+                Buttons.RightShoulder,
+                Buttons.BigButton,
+                Buttons.A,
+                Buttons.B,
+                Buttons.X,
+                Buttons.Y,
+                Buttons.LeftTrigger,
+                Buttons.RightTrigger
+            };
+            static GamePadButtonTypes[] _types = new[]
+            {
+                GamePadButtonTypes.DPadDown,
+                GamePadButtonTypes.DPadLeft,
+                GamePadButtonTypes.DPadRight,
+                GamePadButtonTypes.DPadUp,
+                GamePadButtonTypes.ButtonsStart,
+                GamePadButtonTypes.ButtonsBack,
+                GamePadButtonTypes.ButtonsLeftStick,
+                GamePadButtonTypes.ButtonsRightStick,
+                GamePadButtonTypes.ButtonsLeftShoulder,
+                GamePadButtonTypes.ButtonsRightShoulder,
+                GamePadButtonTypes.ButtonsBigButton,
+                GamePadButtonTypes.ButtonsA,
+                GamePadButtonTypes.ButtonsB,
+                GamePadButtonTypes.ButtonsX,
+                GamePadButtonTypes.ButtonsY,
+                GamePadButtonTypes.TriggersLeft,
+                GamePadButtonTypes.TriggersRight
+            };
+            bool IsPressed(Buttons buttons) =>
+                _last.IsButtonDown(buttons) && _current.IsButtonUp(buttons);
+            public bool TryUpdate()
+            {
+                _current = GamePad.GetState(_index);
+
+                for (var i = 0; i < _available.Length; i++)
+                {
+                    if (IsPressed(_available[i]))
+                    {
+                        _option.SelectedValue = _types[i];
+                        return true;
+                    }
+                }
+                
+                _last = _current;
+                return false;
+            }
+        }
+
         class KeyboardInputMonitor : IInputMonitor
         {
             Keys[] _last = Array.Empty<Keys>();
@@ -470,6 +542,14 @@ namespace Tetrominoes.Options
                 case OptionEnum<Keys> keysEnum:
                     shouldPlay = true;
                     _inputMonitor = new KeyboardInputMonitor(keysEnum);
+                    break;
+
+                case OptionEnum<GamePadButtonTypes> buttonEnum:
+                    shouldPlay = true;
+                    _inputMonitor = new GamePadInputMonitor(
+                        PlayerIndex.One,
+                        buttonEnum
+                    );
                     break;
             }
             if (shouldPlay)
