@@ -1,6 +1,6 @@
 Name "Tetrominoes.OpenGL"
-OutFile "OpenGL.exe"
-InstallDir '$PROGRAMFILES\JonCloud Studios\Tetrominoes\'
+OutFile "Tetrominoes-OpenGL-win-x86.exe"
+InstallDir '$PROGRAMFILES32\JonCloud Studios\Tetrominoes\'
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
@@ -24,7 +24,7 @@ Section "Game"
   SectionIn RO
   
   SetOutPath $INSTDIR
-  File /r "src\Tetrominoes.OpenGL\bin\Release\netcoreapp3.1\publish\*.*"
+  File /r "src\Tetrominoes.OpenGL\bin\Release\netcoreapp3.1\win-x86\publish\*.*"
   
   ; Write the installation path into the registry
   ; WriteRegStr HKLM SOFTWARE\NSIS_Example2 "Install_Dir" "$INSTDIR"

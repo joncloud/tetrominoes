@@ -11,23 +11,24 @@
 [MonoGame]: http://www.monogame.net
 
 ## Getting Started
-### Requirements
-* [.NET Core 3.1 Runtime][]
-
-[.NET Core 3.1 Runtime]: https://dot.net
-
-### Installation
-#### Windows
+### Windows Installation
 1. Navigate to the [Latest Release][]
-2. Download `OpenGL.exe`
-3. Run `OpenGL.exe` to install
+2. Download `Tetrominoes-OpenGL-win-x64.exe`
+  * If you're running a 32-bit version of Windows download `Tetrominoes-OpenGL-win-x86.exe`
+3. Run the `exe` to install
 4. Open Tetrominoes.OpenGL from the Start Menu
 
-#### macOS and Linux
+### macOS Installation
 1. Navigate to the [Latest Release][]
-2. Download `OpenGL.tar.gz`
+2. Download `Tetrominoes-OpenGL-osx-x64.tar.gz`
 3. Extract the archive to any location on your computer
-4. Run `tetrominoes.sh`
+4. Run `Tetrominoes.OpenGL`
+
+### Linux Installation
+1. Navigate to the [Latest Release][]
+2. Download `Tetrominoes-OpenGL-linux-x64.tar.gz`
+3. Extract the archive to any location on your computer
+4. Run `Tetrominoes.OpenGL`
 
 [Latest Release]: https://github.com/joncloud/tetrominoes/releases
 
