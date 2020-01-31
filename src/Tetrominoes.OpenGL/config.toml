@@ -19,6 +19,7 @@ sound_volume = 85
     drop = "K"
     swap = "I"
     pause = "Space"
+    back = "Escape"
 
     [input.gamepad]
     enabled = true
@@ -32,3 +33,4 @@ sound_volume = 85
     drop = "ButtonsLeftShoulder"
     swap = "ButtonsRightShoulder"
     pause = "ButtonsStart"
+    back = "ButtonsBack"

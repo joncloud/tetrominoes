@@ -55,6 +55,7 @@ namespace Tetrominoes.Input
                 Left = GetStateFor(_last, current, GamePadOptions.LeftMap),
                 Right = GetStateFor(_last, current, GamePadOptions.RightMap),
                 Pause = GetStateFor(_last, current, GamePadOptions.PauseMap),
+                Back = GetStateFor(_last, current, GamePadOptions.BackMap),
             };
 
             _last = current;

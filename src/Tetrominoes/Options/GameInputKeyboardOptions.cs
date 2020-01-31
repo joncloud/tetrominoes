@@ -19,6 +19,7 @@ namespace Tetrominoes.Options
             Drop = Keys.K;
             Swap = Keys.I;
             Pause = Keys.Space;
+            Back = Keys.Escape;
         }
 
         [TomlMember(Key = "enabled")]
@@ -42,6 +43,8 @@ namespace Tetrominoes.Options
         public Keys Swap { get; set; }
         [TomlMember(Key = "pause")]
         public Keys Pause { get; set; }
+        [TomlMember(Key = "back")]
+        public Keys Back { get; set; }
 
         public static GameInputKeyboardOptions FromToml(TomlTable table)
         {
@@ -72,6 +75,8 @@ namespace Tetrominoes.Options
                     options.Swap = swap;
                 if (keyboard.TryGetEnumValue<Keys>("pause", out var pause))
                     options.Pause = pause;
+                if (keyboard.TryGetEnumValue<Keys>("back", out var back))
+                    options.Back = back;
             }
 
             return options;

@@ -11,6 +11,7 @@ namespace Tetrominoes.Input
         public InputButtonState Drop { get; set; }
         public InputButtonState Swap { get; set; }
         public InputButtonState Pause { get; set; }
+        public InputButtonState Back { get; set; }
 
         public static InputState operator +(InputState x, InputState y) =>
             new InputState
@@ -23,7 +24,8 @@ namespace Tetrominoes.Input
                 Down = InputMath.GreaterOf(x.Down, y.Down),
                 Left = InputMath.GreaterOf(x.Left, y.Left),
                 Right = InputMath.GreaterOf(x.Right, y.Right),
-                Pause = InputMath.GreaterOf(x.Pause, y.Pause)
+                Pause = InputMath.GreaterOf(x.Pause, y.Pause),
+                Back = InputMath.GreaterOf(x.Back, y.Back)
             };
     }
 }

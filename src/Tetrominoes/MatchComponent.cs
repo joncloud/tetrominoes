@@ -336,6 +336,15 @@ namespace Tetrominoes
 #endif
 
             var state = _input.State;
+            if (state.Back == InputButtonState.Pressed)
+            {
+                Enabled = Visible = false;
+                _menu.Show();
+                _state = MatchState.Playing;
+                _audio.Music.Pause();
+                return;
+            }
+
             if (state.Pause == InputButtonState.Pressed)
             {
                 if (_state == MatchState.Paused)
@@ -406,12 +415,13 @@ namespace Tetrominoes
 
         readonly string[] _pauseText = new[]
         {
-            "Press Pause"
+            "Pause to Resume",
+            "Back to Leave"
         };
         readonly string[] _lostText = new[] 
         {
             "Game Over",
-            "Press Pause"
+            "Pause to Leave"
         };
         public override void Draw(GameTime gameTime)
         {

@@ -65,7 +65,6 @@ namespace Tetrominoes.OpenGL
         protected override void Update(GameTime gameTime)
         {
             var current = Keyboard.GetState();
-            if (current.IsKeyDown(Keys.Escape)) Exit();
 
             var alt = current.IsKeyDown(Keys.LeftAlt) || current.IsKeyDown(Keys.RightAlt);
             if (alt && _last.IsKeyUp(Keys.Enter) && 

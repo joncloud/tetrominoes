@@ -51,7 +51,8 @@ namespace Tetrominoes.Input
                 Down = GetStateFor(_last, current, KeyboardOptions.Down),
                 Left = GetStateFor(_last, current, KeyboardOptions.Left),
                 Right = GetStateFor(_last, current, KeyboardOptions.Right),
-                Pause = GetStateFor(_last, current, KeyboardOptions.Pause)
+                Pause = GetStateFor(_last, current, KeyboardOptions.Pause),
+                Back = GetStateFor(_last, current, KeyboardOptions.Back)
             };
 
             _last = current;

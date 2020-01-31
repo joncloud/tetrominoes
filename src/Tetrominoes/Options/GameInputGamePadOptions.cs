@@ -24,6 +24,7 @@ namespace Tetrominoes.Options
             Drop = GamePadButtonTypes.ButtonsLeftShoulder;
             Swap = GamePadButtonTypes.ButtonsRightShoulder;
             Pause = GamePadButtonTypes.ButtonsStart;
+            Back = GamePadButtonTypes.ButtonsBack;
         }
 
         [TomlMember(Key = "enabled")]
@@ -159,6 +160,20 @@ namespace Tetrominoes.Options
         [TomlIgnore]
         public GetButtonState PauseMap { get; private set; }
 
+        GamePadButtonTypes _back;
+        [TomlMember(Key = "back")]
+        public GamePadButtonTypes Back
+        {
+            get => _back;
+            set
+            {
+                _back = value;
+                BackMap = GamePadButtonMaps.GetMapFor(value);
+            }
+        }
+        [TomlIgnore]
+        public GetButtonState BackMap { get; private set; }
+
         public static GameInputGamePadOptions FromToml(TomlTable table)
         {
             if (table == default) throw new ArgumentNullException(nameof(table));
@@ -190,6 +205,8 @@ namespace Tetrominoes.Options
                     options.Swap = swap;
                 if (gamepad.TryGetEnumValue<GamePadButtonTypes>("pause", out var pause))
                     options.Pause = pause;
+                if (gamepad.TryGetEnumValue<GamePadButtonTypes>("back", out var back))
+                    options.Back = back;
             }
 
             return options;

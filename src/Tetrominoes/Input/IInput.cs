@@ -11,5 +11,6 @@
         TValue Drop { get; }
         TValue Swap { get; }
         TValue Pause { get; }
+        TValue Back { get; }
     }
 }

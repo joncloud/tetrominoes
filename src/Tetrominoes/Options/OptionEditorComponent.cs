@@ -112,6 +112,7 @@ namespace Tetrominoes.Options
                     _keyboard.Drop,
                     _keyboard.Swap,
                     _keyboard.Pause,
+                    _keyboard.Back,
                     _gamePad.Header,
                     _gamePad.Enabled,
                     _gamePad.Up,
@@ -123,6 +124,7 @@ namespace Tetrominoes.Options
                     _gamePad.Drop,
                     _gamePad.Swap,
                     _gamePad.Pause,
+                    _gamePad.Back,
                 };
             }
 
@@ -218,6 +220,7 @@ namespace Tetrominoes.Options
                 public OptionEnum<Keys> Drop { get; }
                 public OptionEnum<Keys> Swap { get; }
                 public OptionEnum<Keys> Pause { get; }
+                public OptionEnum<Keys> Back { get; }
 
                 public OptionInputKeyboardModel(GameInputKeyboardOptions options)
                 {
@@ -236,6 +239,7 @@ namespace Tetrominoes.Options
                     Drop = new OptionEnum<Keys>("  Drop", options.Drop);
                     Swap = new OptionEnum<Keys>("  Swap", options.Swap);
                     Pause = new OptionEnum<Keys>("  Pause", options.Pause);
+                    Back = new OptionEnum<Keys>("  Back", options.Back);
                 }
 
                 public void Commit()
@@ -250,6 +254,7 @@ namespace Tetrominoes.Options
                     _options.Drop = Drop.SelectedValue;
                     _options.Swap = Swap.SelectedValue;
                     _options.Pause = Pause.SelectedValue;
+                    _options.Back = Back.SelectedValue;
                 }
             }
 
@@ -267,6 +272,7 @@ namespace Tetrominoes.Options
                 public OptionEnum<GamePadButtonTypes> Drop { get; }
                 public OptionEnum<GamePadButtonTypes> Swap { get; }
                 public OptionEnum<GamePadButtonTypes> Pause { get; }
+                public OptionEnum<GamePadButtonTypes> Back { get; }
 
                 public OptionInputGamePadModel(GameInputGamePadOptions options)
                 {
@@ -285,6 +291,7 @@ namespace Tetrominoes.Options
                     Drop = new OptionEnum<GamePadButtonTypes>("  Drop", options.Drop, ConvertToString);
                     Swap = new OptionEnum<GamePadButtonTypes>("  Swap", options.Swap, ConvertToString);
                     Pause = new OptionEnum<GamePadButtonTypes>("  Pause", options.Pause, ConvertToString);
+                    Back = new OptionEnum<GamePadButtonTypes>("  Back", options.Back, ConvertToString);
                 }
 
                 static string ConvertToString(GamePadButtonTypes type) =>
@@ -295,7 +302,7 @@ namespace Tetrominoes.Options
                         [GamePadButtonTypes.ButtonsA] = "×",
                         [GamePadButtonTypes.ButtonsB] = "Ö",
                         [GamePadButtonTypes.ButtonsBack] = "Ï",
-                        [GamePadButtonTypes.ButtonsBigButton] = "Ï",
+                        [GamePadButtonTypes.ButtonsBigButton] = "æ",
                         [GamePadButtonTypes.ButtonsLeftShoulder] = "Í",
                         [GamePadButtonTypes.ButtonsLeftStick] = "Ú",
                         [GamePadButtonTypes.ButtonsRightShoulder] = "Î",
@@ -306,7 +313,7 @@ namespace Tetrominoes.Options
                         [GamePadButtonTypes.DPadDown] = "Á",
                         [GamePadButtonTypes.DPadLeft] = "Â",
                         [GamePadButtonTypes.DPadRight] = "Ã",
-                        [GamePadButtonTypes.DPadUp] = "À"
+                        [GamePadButtonTypes.DPadUp] = "À",
                     };
 
                 public void Commit()
@@ -321,6 +328,7 @@ namespace Tetrominoes.Options
                     _options.Drop = Drop.SelectedValue;
                     _options.Swap = Swap.SelectedValue;
                     _options.Pause = Pause.SelectedValue;
+                    _options.Back = Back.SelectedValue;
                 }
             }
         }
