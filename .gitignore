@@ -357,3 +357,6 @@ MigrationBackup/
 
 # NSIS
 *.exe
+*.tar
+*.tar.gz
+*.zip
