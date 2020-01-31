@@ -24,8 +24,16 @@ namespace Tetrominoes.Options
                 GamePadButtonTypes.DPadDown => DPad.Down,
                 GamePadButtonTypes.DPadLeft => DPad.Left,
                 GamePadButtonTypes.DPadRight => DPad.Right,
+                GamePadButtonTypes.TriggersLeft => Triggers.Left,
+                GamePadButtonTypes.TriggersRight => Triggers.Right,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
+        }
+
+        public static class Triggers
+        {
+            public static ButtonState Left(in GamePadState state) => state.Triggers.Left > 0.1f ? ButtonState.Pressed : ButtonState.Released;
+            public static ButtonState Right(in GamePadState state) => state.Triggers.Right > 0.1f ? ButtonState.Pressed : ButtonState.Released;
         }
 
         public static class DPad

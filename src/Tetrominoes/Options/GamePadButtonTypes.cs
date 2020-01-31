@@ -17,6 +17,8 @@ namespace Tetrominoes.Options
         ButtonsA,
         ButtonsB,
         ButtonsBigButton,
+        TriggersLeft,
+        TriggersRight,
         // TODO add joysticks
     }
 }

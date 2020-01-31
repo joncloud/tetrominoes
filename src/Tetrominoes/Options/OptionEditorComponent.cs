@@ -314,6 +314,8 @@ namespace Tetrominoes.Options
                         [GamePadButtonTypes.DPadLeft] = "Â",
                         [GamePadButtonTypes.DPadRight] = "Ã",
                         [GamePadButtonTypes.DPadUp] = "À",
+                        [GamePadButtonTypes.TriggersLeft] = "Ë",
+                        [GamePadButtonTypes.TriggersRight] = "Ì",
                     };
 
                 public void Commit()

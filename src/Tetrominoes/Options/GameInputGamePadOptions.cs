@@ -21,8 +21,8 @@ namespace Tetrominoes.Options
             Right = GamePadButtonTypes.DPadRight;
             RotateLeft = GamePadButtonTypes.ButtonsA;
             RotateRight = GamePadButtonTypes.ButtonsB;
-            Drop = GamePadButtonTypes.ButtonsLeftShoulder;
-            Swap = GamePadButtonTypes.ButtonsRightShoulder;
+            Drop = GamePadButtonTypes.TriggersLeft;
+            Swap = GamePadButtonTypes.TriggersRight;
             Pause = GamePadButtonTypes.ButtonsStart;
             Back = GamePadButtonTypes.ButtonsBack;
         }
