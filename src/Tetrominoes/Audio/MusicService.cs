@@ -44,7 +44,7 @@ namespace Tetrominoes.Audio
 
         public void Pause()
         {
-            //MediaPlayer.Stop();
+            MediaPlayer.Stop();
         }
     }
 }
