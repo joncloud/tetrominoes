@@ -348,12 +348,50 @@ namespace Tetrominoes.Options
                 return;
             }
 
-            var state = _input.State;
+            if (_inputMonitor != default)
+            {
+                if (_inputMonitor.TryUpdate())
+                {
+                    _inputMonitor = default;
+                }
+                return;
+            }
 
+            var state = _input.State;
             HandleOptionSelection(state);
             HandleOptionValue(state);
 
             base.Update(gameTime);
+        }
+
+        IInputMonitor _inputMonitor;
+        interface IInputMonitor
+        {
+            bool TryUpdate();
+        }
+
+        class KeyboardInputMonitor : IInputMonitor
+        {
+            Keys[] _last = Array.Empty<Keys>();
+            Keys[] _current = Array.Empty<Keys>();
+            readonly OptionEnum<Keys> _option;
+            public KeyboardInputMonitor(OptionEnum<Keys> option) =>
+                _option = option ?? throw new ArgumentNullException(nameof(option));
+
+            public bool TryUpdate()
+            {
+                var state = Keyboard.GetState();
+                _current = state.GetPressedKeys();
+
+                if (_current.Length == 0 && _last.Length > 0)
+                {
+                    _option.SelectedValue = _last[0];
+                    return true;
+                }
+
+                _last = _current;
+                return false;
+            }
         }
 
         void HandleOptionValue(InputState state)
@@ -417,6 +455,11 @@ namespace Tetrominoes.Options
                 case OptionItemList<Resolution> resolutionList:
                     shouldPlay = true;
                     resolutionList.Next(offset);
+                    break;
+
+                case OptionEnum<Keys> keysEnum:
+                    shouldPlay = true;
+                    _inputMonitor = new KeyboardInputMonitor(keysEnum);
                     break;
             }
             if (shouldPlay)
@@ -509,7 +552,8 @@ namespace Tetrominoes.Options
             var pos = new Vector2();
             for (var i = 0; i < _model.Options.Count; i++)
             {
-                var font = i == _selectedOptionIndex
+                var selected = i == _selectedOptionIndex;
+                var font = selected
                     ? _boldWeight
                     : _normalWeight;
 
@@ -525,14 +569,35 @@ namespace Tetrominoes.Options
                 );
 
                 pos.X = maxWidth + 64;
+                var valueFont = option is OptionEnum<GamePadButtonTypes>
+                    ? _gamepad
+                    : font;
+                var valueText = option.ToString();
                 _spriteBatch.DrawString(
-                    option is OptionEnum<GamePadButtonTypes>
-                        ? _gamepad
-                        : font,
-                    option.ToString(),
+                    valueFont,
+                    valueText,
                     pos,
                     Color.Black
                 );
+
+                if (selected && _inputMonitor != null)
+                {
+                    pos.X += valueFont.MeasureString(valueText).X + 32;
+
+                    var size = font.MeasureString("¤") / 2;
+
+                    _spriteBatch.DrawString(
+                        font,
+                        "¤",
+                        pos + size,
+                        Color.Black,
+                        MathHelper.TwoPi * (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds),
+                        size,
+                        1.0f,
+                        SpriteEffects.None,
+                        1.0f
+                    );
+                }
 
                 pos.Y += measurement.Y;
             }

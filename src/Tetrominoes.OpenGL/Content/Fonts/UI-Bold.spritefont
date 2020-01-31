@@ -13,6 +13,10 @@
         <End>&#126;</End>
       </CharacterRegion>
       <CharacterRegion>
+        <Start>&#164;</Start>
+        <End>&#164;</End>
+      </CharacterRegion>
+      <CharacterRegion>
         <Start>&#171;</Start>
         <End>&#171;</End>
       </CharacterRegion>
