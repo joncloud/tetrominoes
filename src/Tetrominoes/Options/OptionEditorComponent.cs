@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tetrominoes.Audio;
+using Tetrominoes.Graphics;
 using Tetrominoes.Input;
 
 namespace Tetrominoes.Options
@@ -377,15 +378,13 @@ namespace Tetrominoes.Options
         }
 
         SpriteBatch _spriteBatch;
-        SpriteFont _normalWeight;
-        SpriteFont _boldWeight;
-        SpriteFont _gamepad;
+        UIFonts _uiFonts;
+        GamePadFonts _gamePadFonts;
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _normalWeight = Game.Content.Load<SpriteFont>("Fonts/UI");
-            _boldWeight = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
-            _gamepad = Game.Content.Load<SpriteFont>("Fonts/Gamepad");
+            _uiFonts = new UIFonts(FontSize.Large, Game.Content);
+            _gamePadFonts = new GamePadFonts(FontSize.Large, Game.Content);
 
             base.LoadContent();
         }
@@ -673,8 +672,8 @@ namespace Tetrominoes.Options
             for (var i = 0; i < _model.Options.Count; i++)
             {
                 var font = i == _selectedOptionIndex
-                    ? _boldWeight
-                    : _normalWeight;
+                    ? _uiFonts.BoldWeight
+                    : _uiFonts.NormalWeight;
 
                 var option = _model.Options[i];
 
@@ -697,8 +696,8 @@ namespace Tetrominoes.Options
             {
                 var selected = i == _selectedOptionIndex;
                 var font = selected
-                    ? _boldWeight
-                    : _normalWeight;
+                    ? _uiFonts.BoldWeight
+                    : _uiFonts.NormalWeight;
 
                 var option = _model.Options[i];
                 var measurement = font.MeasureString(option.Name);
@@ -713,7 +712,7 @@ namespace Tetrominoes.Options
 
                 pos.X = maxWidth + 64;
                 var valueFont = option is OptionEnum<GamePadButtonTypes>
-                    ? _gamepad
+                    ? _gamePadFonts.NormalWeight
                     : font;
                 var valueText = option.ToString();
                 _spriteBatch.DrawString(

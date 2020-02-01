@@ -11,10 +11,12 @@ namespace Tetrominoes
             private set
             {
                 _totalTime = value;
-                TotalTimeAsText = TotalTime.ToString("hh\\:mm\\:ss\\.fff");
+                TotalTimeAsText = TotalTime.ToString("hh\\:mm\\:ss");
+                FractionalSecondsAsText = TotalTime.ToString("fff");
             }
         }
         public string TotalTimeAsText { get; private set; } = "";
+        public string FractionalSecondsAsText { get; private set; } = "";
 
         int _totalScore;
         public int TotalScore

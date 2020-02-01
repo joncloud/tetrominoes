@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tetrominoes.Audio;
+using Tetrominoes.Graphics;
 using Tetrominoes.Input;
 using Tetrominoes.Options;
 
@@ -229,13 +230,13 @@ namespace Tetrominoes
         RenderTarget2D _previewTexture;
         SpriteBatch _spriteBatch;
         TetrominoRenderer _tetrominoRenderer;
-        SpriteFont _normalWeightFont;
-        SpriteFont _boldWeightFont;
+        UIFonts _largeUIFonts;
+        UIFonts _smallUIFonts;
         const int TileWidth = 8;
         protected override void LoadContent()
         {
-            _normalWeightFont = Game.Content.Load<SpriteFont>("Fonts/UI");
-            _boldWeightFont = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
+            _largeUIFonts = new UIFonts(FontSize.Large, Game.Content);
+            _smallUIFonts = new UIFonts(FontSize.Small, Game.Content);
             _tileTexture = Game.Content.Load<Texture2D>("Textures/Tiles");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _tetrominoRenderer = new TetrominoRenderer(
@@ -588,48 +589,61 @@ namespace Tetrominoes
         {
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
+            var pos = new Vector2(114, 0);
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 _match.Score.TotalTimeAsText,
-                new Vector2(0, 0),
+                pos,
                 Color.Black
             );
+
+            pos.X += _largeUIFonts.NormalWeight
+                .MeasureString(_match.Score.TotalTimeAsText)
+                .X;
+
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _smallUIFonts.NormalWeight,
+                _match.Score.FractionalSecondsAsText,
+                pos,
+                Color.Black
+            );
+
+            _spriteBatch.DrawString(
+                _largeUIFonts.NormalWeight,
                 "Score",
                 new Vector2(0, 64),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 _match.Score.TotalScoreAsText,
-                new Vector2(275, 64),
+                new Vector2(211, 64),
                 Color.Black
             );
 
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 "Level",
                 new Vector2(0, 128),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 _match.Score.LevelAsText,
-                new Vector2(275, 128),
+                new Vector2(211, 128),
                 Color.Black
             );
 
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 "Rows",
                 new Vector2(0, 192),
                 Color.Black
             );
             _spriteBatch.DrawString(
-                _normalWeightFont,
+                _largeUIFonts.NormalWeight,
                 _match.Score.TotalRowsAsText,
-                new Vector2(275, 192),
+                new Vector2(211, 192),
                 Color.Black
             );
 
@@ -645,7 +659,7 @@ namespace Tetrominoes
             {
                 var measurement = 
                     measurements[i] = 
-                    _boldWeightFont.MeasureString(lines[i]);
+                    _largeUIFonts.BoldWeight.MeasureString(lines[i]);
                 maxWidth = Math.Max(maxWidth, measurement.X);
             }
 
@@ -675,19 +689,19 @@ namespace Tetrominoes
 
                 // Poor implementation for borders
                 _spriteBatch.DrawString(
-                    _boldWeightFont,
+                    _largeUIFonts.BoldWeight,
                     line,
                     pos - offset,
                     Color.Black
                 );
                 _spriteBatch.DrawString(
-                    _boldWeightFont,
+                    _largeUIFonts.BoldWeight,
                     line,
                     pos + offset,
                     Color.Black
                 );
                 _spriteBatch.DrawString(
-                    _boldWeightFont,
+                    _largeUIFonts.BoldWeight,
                     line,
                     pos,
                     Color.White

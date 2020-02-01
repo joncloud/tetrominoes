@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Tetrominoes.Audio;
+using Tetrominoes.Graphics;
 using Tetrominoes.Input;
 using Tetrominoes.Options;
 
@@ -71,16 +72,14 @@ namespace Tetrominoes
         }
 
         SpriteBatch _spriteBatch;
-        SpriteFont _normalWeight;
-        SpriteFont _boldWeight;
+        UIFonts _uiFonts;
         Random _random;
         Texture2D _tileTexture;
         const int TileWidth = 8;
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _normalWeight = Game.Content.Load<SpriteFont>("Fonts/UI");
-            _boldWeight = Game.Content.Load<SpriteFont>("Fonts/UI-Bold");
+            _uiFonts = new UIFonts(FontSize.Large, Game.Content);
             _tileTexture = Game.Content.Load<Texture2D>("Textures/Tiles");
 
 #if DEBUG
@@ -213,8 +212,8 @@ namespace Tetrominoes
             for (var i = 0; i < _options.Length; i++)
             {
                 var font = i == _selectedOptionIndex
-                    ? _boldWeight
-                    : _normalWeight;
+                    ? _uiFonts.BoldWeight
+                    : _uiFonts.NormalWeight;
 
                 var option = _options[i];
 
@@ -235,8 +234,8 @@ namespace Tetrominoes
             for (var i = 0; i < _options.Length; i++)
             {
                 var font = i == _selectedOptionIndex
-                    ? _boldWeight
-                    : _normalWeight;
+                    ? _uiFonts.BoldWeight
+                    : _uiFonts.NormalWeight;
 
                 var option = _options[i];
 
@@ -260,7 +259,7 @@ namespace Tetrominoes
             );
             _spriteBatch.Begin(transformMatrix: tx, samplerState: SamplerState.PointClamp);
             _spriteBatch.DrawString(
-                _normalWeight,
+                _uiFonts.NormalWeight,
                 AppVersion.Display,
                 Vector2.Zero,
                 Color.Black
