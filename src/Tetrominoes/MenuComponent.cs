@@ -106,9 +106,7 @@ namespace Tetrominoes
         TimeSpan _tillNextRandom;
         void RandomizeGrid()
         {
-            _background.BackgroundEffect.Effect = Game.Content.Load<Effect>(
-                _random.NextElement(BackgroundEffect.EffectNames)
-            );
+            _background.NextEffect();
             _tillNextRandom = TimeSpan.FromSeconds(15);
 
             var tx = Matrix.CreateTranslation(16, 0, 0);
