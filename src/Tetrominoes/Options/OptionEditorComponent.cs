@@ -99,6 +99,7 @@ namespace Tetrominoes.Options
                     _gameplay.Header,
                     _gameplay.ShadowPiece,
                     _gameplay.SwapPiece,
+                    _gameplay.SlideSpeed,
                     _graphics.Header,
                     _graphics.Resolution,
                     _graphics.Fullscreen,
@@ -148,6 +149,7 @@ namespace Tetrominoes.Options
                 public OptionHeader Header { get; }
                 public OptionToggle ShadowPiece { get; }
                 public OptionToggle SwapPiece { get; }
+                public OptionItemList<SlideSpeed> SlideSpeed { get; }
 
                 public OptionGameplayModel(GameGameplayOptions options)
                 {
@@ -155,12 +157,23 @@ namespace Tetrominoes.Options
                     Header = new OptionHeader("Gameplay");
                     ShadowPiece = new OptionToggle(" Shadow Piece") { SelectedValue = options.ShadowPiece };
                     SwapPiece = new OptionToggle(" Swap Piece") { SelectedValue = options.SwapPiece };
+                    SlideSpeed = new OptionItemList<SlideSpeed>(
+                        " Slide Speed",
+                        options.SlideSpeed,
+                        new[] {
+                            Tetrominoes.Options.SlideSpeed.Off,
+                            Tetrominoes.Options.SlideSpeed.Slow,
+                            Tetrominoes.Options.SlideSpeed.Fast,
+                            Tetrominoes.Options.SlideSpeed.Instant
+                        }
+                    );
                 }
 
                 public void Commit()
                 {
                     _options.ShadowPiece = ShadowPiece.SelectedValue;
                     _options.SwapPiece = SwapPiece.SelectedValue;
+                    _options.SlideSpeed = SlideSpeed.SelectedValue;
                 }
             }
 
@@ -506,7 +519,7 @@ namespace Tetrominoes.Options
 
         void HandleOptionValue(InputState state)
         {
-            if (state.Back == InputButtonState.Pressed)
+            if (state.Back.State == InputButtonState.Pressed)
             {
                 Hide();
                 _menu.Show();
@@ -514,16 +527,16 @@ namespace Tetrominoes.Options
             }
 
             var offset = 0;
-            if (state.Left == InputButtonState.Pressed ||
-                state.RotateLeft == InputButtonState.Pressed)
+            if (state.Left.State == InputButtonState.Pressed ||
+                state.RotateLeft.State == InputButtonState.Pressed)
             {
                 offset--;
             }
-            if (state.Right == InputButtonState.Pressed ||
-                state.Drop == InputButtonState.Pressed ||
-                state.Pause == InputButtonState.Pressed ||
-                state.RotateRight == InputButtonState.Pressed ||
-                state.Swap == InputButtonState.Pressed)
+            if (state.Right.State == InputButtonState.Pressed ||
+                state.Drop.State == InputButtonState.Pressed ||
+                state.Pause.State == InputButtonState.Pressed ||
+                state.RotateRight.State == InputButtonState.Pressed ||
+                state.Swap.State == InputButtonState.Pressed)
             {
                 offset++;
             }
@@ -574,6 +587,11 @@ namespace Tetrominoes.Options
                     resolutionList.Next(offset);
                     break;
 
+                case OptionItemList<SlideSpeed> slideSpeedList:
+                    shouldPlay = true;
+                    slideSpeedList.Next(offset);
+                    break;
+
                 case OptionEnum<Keys> keysEnum:
                     shouldPlay = true;
                     _inputMonitor = new KeyboardInputMonitor(keysEnum);
@@ -617,11 +635,11 @@ namespace Tetrominoes.Options
         void HandleOptionSelection(InputState state)
         {
             var offset = 0;
-            if (state.Up == InputButtonState.Pressed)
+            if (state.Up.State == InputButtonState.Pressed)
             {
                 offset--;
             }
-            if (state.Down == InputButtonState.Pressed)
+            if (state.Down.State == InputButtonState.Pressed)
             {
                 offset++;
             }

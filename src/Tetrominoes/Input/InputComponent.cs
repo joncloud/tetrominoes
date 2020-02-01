@@ -50,7 +50,7 @@ namespace Tetrominoes.Input
             while (--index >= 0)
             {
                 var mapper = _enabled[index];
-                var state = mapper.Update();
+                var state = mapper.Update(gameTime);
                 if (state == InputConnection.Disconnected)
                 {
                     _enabled.RemoveAt(index);

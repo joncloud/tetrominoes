@@ -9,6 +9,7 @@ namespace Tetrominoes.Options
         {
             ShadowPiece = true;
             SwapPiece = true;
+            SlideSpeed = SlideSpeed.Slow;
         }
 
         public static GameGameplayOptions FromToml(TomlTable table)
@@ -27,6 +28,10 @@ namespace Tetrominoes.Options
                 {
                     options.SwapPiece = swapPiece;
                 }
+                if (graphics.TryGetEnumValue<SlideSpeed>("slide_speed", out var slideSpeed))
+                {
+                    options.SlideSpeed = slideSpeed;
+                }
             }
 
             return options;
@@ -37,5 +42,8 @@ namespace Tetrominoes.Options
 
         [TomlMember(Key = "swap_piece")]
         public bool SwapPiece { get; set; }
+
+        [TomlMember(Key = "slide_speed")]
+        public SlideSpeed SlideSpeed { get; set; }
     }
 }

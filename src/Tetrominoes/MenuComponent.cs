@@ -151,11 +151,11 @@ namespace Tetrominoes
             var state = _input.State;
 
             var offset = 0;
-            if (state.Up == InputButtonState.Pressed)
+            if (state.Up.State == InputButtonState.Pressed)
             {
                 offset--;
             }
-            if (state.Down == InputButtonState.Pressed)
+            if (state.Down.State == InputButtonState.Pressed)
             {
                 offset++;
             }
@@ -175,16 +175,16 @@ namespace Tetrominoes
             }
 
             var chosenState = InputMath.GreaterOf(
-                state.RotateLeft,
+                state.RotateLeft.State,
                 InputMath.GreaterOf(
-                    state.RotateRight,
+                    state.RotateRight.State,
                     InputMath.GreaterOf(
-                        state.Swap,
+                        state.Swap.State,
                         InputMath.GreaterOf(
-                            state.Drop,
+                            state.Drop.State,
                             InputMath.GreaterOf(
-                                state.Drop,
-                                state.Pause
+                                state.Drop.State,
+                                state.Pause.State
                             )
                         )
                     )

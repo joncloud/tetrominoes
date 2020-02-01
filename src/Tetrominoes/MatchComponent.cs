@@ -342,7 +342,7 @@ namespace Tetrominoes
 
             var state = _input.State;
             if (_state != MatchState.Playing &&
-                state.Back == InputButtonState.Pressed)
+                state.Back.State == InputButtonState.Pressed)
             {
                 Enabled = Visible = false;
                 _menu.Show();
@@ -351,7 +351,7 @@ namespace Tetrominoes
                 return;
             }
 
-            if (state.Pause == InputButtonState.Pressed)
+            if (state.Pause.State == InputButtonState.Pressed)
             {
                 if (_state == MatchState.Paused)
                 {
@@ -378,32 +378,38 @@ namespace Tetrominoes
                 return;
             }
 
-            if (state.Down == InputButtonState.Pressed)
+            if (state.Down.State == InputButtonState.Pressed ||
+                (_option.Options.Gameplay.SlideSpeed != SlideSpeed.Off &&
+                state.Down.IsHeldForInterval((int)_option.Options.Gameplay.SlideSpeed)))
             {
                 _match.Controller.Move.Down();
             }
-            if (state.Left == InputButtonState.Pressed)
+            if (state.Left.State == InputButtonState.Pressed ||
+                (_option.Options.Gameplay.SlideSpeed != SlideSpeed.Off &&
+                state.Left.IsHeldForInterval((int)_option.Options.Gameplay.SlideSpeed)))
             {
                 _match.Controller.Move.Left();
             }
-            if (state.Right == InputButtonState.Pressed)
+            if (state.Right.State == InputButtonState.Pressed ||
+                (_option.Options.Gameplay.SlideSpeed != SlideSpeed.Off &&
+                state.Right.IsHeldForInterval((int)_option.Options.Gameplay.SlideSpeed)))
             {
                 _match.Controller.Move.Right();
             }
 
-            if (state.Swap == InputButtonState.Pressed)
+            if (state.Swap.State == InputButtonState.Pressed)
             {
                 _match.Controller.Swap();
             }
-            if (state.RotateLeft == InputButtonState.Pressed)
+            if (state.RotateLeft.State == InputButtonState.Pressed)
             {
                 _match.Controller.Rotate.Left();
             }
-            if (state.RotateRight == InputButtonState.Pressed)
+            if (state.RotateRight.State == InputButtonState.Pressed)
             {
                 _match.Controller.Rotate.Right();
             }
-            if (state.Drop == InputButtonState.Pressed)
+            if (state.Drop.State == InputButtonState.Pressed)
             {
                 _match.Tetrominoes.Current.Position =
                     _match.Tetrominoes.Shadow.Position;

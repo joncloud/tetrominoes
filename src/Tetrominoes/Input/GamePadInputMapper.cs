@@ -8,7 +8,6 @@ namespace Tetrominoes.Input
     public class GamePadInputMapper : IInputMapper
     {
         readonly IOptionService _options;
-        GamePadState _last;
         GameInputGamePadOptions GamePadOptions => _options.Options.Input.GamePad;
         public InputState Current { get; private set; }
         public GamePadInputMapper(IOptionService options)
@@ -19,47 +18,34 @@ namespace Tetrominoes.Input
         public static bool IsEnabled(IOptionService options) =>
             options.Options.Input.GamePad.Enabled;
 
-        static InputButtonState GetStateFor(in GamePadState last, in GamePadState current, GetButtonState get)
+        static InputButton GetStateFor(in GamePadState current, GetButtonState get, in InputButton button, GameTime gameTime)
         {
-            var wasDown = get(last) == ButtonState.Pressed;
-            var isDown = get(current) == ButtonState.Pressed;
-
-            if (wasDown && isDown)
-            {
-                return InputButtonState.Held;
-            }
-            else if (wasDown)
-            {
-                return InputButtonState.Pressed;
-            }
-            else
-            {
-                return InputButtonState.Released;
-            }
+            return get(current) == ButtonState.Pressed
+                ? button.Press(gameTime)
+                : button.Release();
         }
 
-        public InputConnection Update()
+        public InputConnection Update(GameTime gameTime)
         {
-            var current = GamePad.GetState(
+            var gamePad = GamePad.GetState(
                 GamePadOptions.PlayerIndex
             );
 
             Current = new InputState
             {
-                RotateLeft = GetStateFor(_last, current, GamePadOptions.RotateLeftMap),
-                RotateRight = GetStateFor(_last, current, GamePadOptions.RotateRightMap),
-                Drop = GetStateFor(_last, current, GamePadOptions.DropMap),
-                Swap = GetStateFor(_last, current, GamePadOptions.SwapMap),
-                Up = GetStateFor(_last, current, GamePadOptions.UpMap),
-                Down = GetStateFor(_last, current, GamePadOptions.DownMap),
-                Left = GetStateFor(_last, current, GamePadOptions.LeftMap),
-                Right = GetStateFor(_last, current, GamePadOptions.RightMap),
-                Pause = GetStateFor(_last, current, GamePadOptions.PauseMap),
-                Back = GetStateFor(_last, current, GamePadOptions.BackMap),
+                RotateLeft = GetStateFor(gamePad, GamePadOptions.RotateLeftMap, Current.RotateLeft, gameTime),
+                RotateRight = GetStateFor(gamePad, GamePadOptions.RotateRightMap, Current.RotateRight, gameTime),
+                Drop = GetStateFor(gamePad, GamePadOptions.DropMap, Current.Drop, gameTime),
+                Swap = GetStateFor(gamePad, GamePadOptions.SwapMap, Current.Swap, gameTime),
+                Up = GetStateFor(gamePad, GamePadOptions.UpMap, Current.Up, gameTime),
+                Down = GetStateFor(gamePad, GamePadOptions.DownMap, Current.Down, gameTime),
+                Left = GetStateFor(gamePad, GamePadOptions.LeftMap, Current.Left, gameTime),
+                Right = GetStateFor(gamePad, GamePadOptions.RightMap, Current.Right, gameTime),
+                Pause = GetStateFor(gamePad, GamePadOptions.PauseMap, Current.Pause, gameTime),
+                Back = GetStateFor(gamePad, GamePadOptions.BackMap, Current.Back, gameTime),
             };
 
-            _last = current;
-            return current.IsConnected 
+            return gamePad.IsConnected 
                 ? InputConnection.Connected 
                 : InputConnection.Disconnected;
         }
@@ -69,7 +55,6 @@ namespace Tetrominoes.Input
             var current = GamePad.GetState(
                 GamePadOptions.PlayerIndex
             );
-            _last = current;
             return current.IsConnected 
                 ? InputConnection.Connected
                 : InputConnection.Disconnected;

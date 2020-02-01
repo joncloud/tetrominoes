@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 using Tetrominoes.Options;
 
@@ -22,9 +23,9 @@ namespace Tetrominoes.Input
                 ? _inner.GetConnectionState()
                 : InputConnection.Disconnected;
 
-        public InputConnection Update() =>
+        public InputConnection Update(GameTime gameTime) =>
             _enabled(_options)
-                ? _inner.Update()
+                ? _inner.Update(gameTime)
                 : InputConnection.Disconnected;
     }
 }
