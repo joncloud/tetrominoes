@@ -8,14 +8,6 @@ using System.Text;
 
 namespace Tetrominoes
 {
-    public interface IBackgroundService
-    {
-        RenderTarget2D Board { get; }
-        BackgroundEffect BackgroundEffect { get; }
-
-        void Clear();
-    }
-
     public class BackgroundComponent : DrawableGameComponent, IBackgroundService
     {
         public BackgroundComponent(Game game) : base(game)
@@ -35,6 +27,11 @@ namespace Tetrominoes
         public BackgroundEffect BackgroundEffect { get; private set; }
 
         SpriteBatch _spriteBatch;
+#if DEBUG
+        readonly Random _random = new Random(0);
+#else
+        readonly Random _random = new Random();
+#endif
 
         public void Clear()
         {
@@ -42,6 +39,13 @@ namespace Tetrominoes
             GraphicsDevice.SetRenderTarget(Board);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTargets(targets);
+        }
+
+        public void NextEffect()
+        {
+            BackgroundEffect.Effect = Game.Content.Load<Effect>(
+                _random.NextElement(BackgroundEffect.EffectNames)
+            );
         }
 
         protected override void LoadContent()

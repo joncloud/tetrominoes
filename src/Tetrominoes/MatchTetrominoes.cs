@@ -5,7 +5,7 @@ namespace Tetrominoes
 {
     public class MatchTetrominoes : IDisposable
     {
-        readonly Random _random;
+        readonly IMatchCalculator _calculator;
         public Match Match { get; }
         Tetromino _current;
         public Tetromino Current => _current;
@@ -14,9 +14,9 @@ namespace Tetrominoes
         Tetromino? _swap;
         public Tetromino? Swap => _swap;
 
-        public MatchTetrominoes(Random random, Match match)
+        public MatchTetrominoes(IMatchCalculator calculator, Match match)
         {
-            _random = random ?? throw new ArgumentNullException(nameof(random));
+            _calculator = calculator ?? throw new ArgumentNullException(nameof(calculator));
             Match = match ?? throw new ArgumentNullException(nameof(match));
 
             _current = RandomTetromino();
@@ -30,7 +30,7 @@ namespace Tetrominoes
 
         Tetromino RandomTetromino()
         {
-            var piece = (TetrominoPiece)_random.Next(1, 8);
+            var piece = _calculator.NextTetrominoPiece();
             return new Tetromino(piece);
         }
 

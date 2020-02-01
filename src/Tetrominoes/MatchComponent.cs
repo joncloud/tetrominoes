@@ -80,7 +80,7 @@ namespace Tetrominoes
         void SetupPlaylist()
         {
             _tracks.Clear();
-            foreach (var track in _audio.Music.Tracks.OrderBy(_ => _match.Random.NextDouble()))
+            foreach (var track in _audio.Music.Tracks.OrderBy(_ => Guid.NewGuid()))
             {
                 _tracks.Enqueue(track);
             }
@@ -206,9 +206,7 @@ namespace Tetrominoes
 
         void Score_LevelChanged(MatchScore score)
         {
-            _background.BackgroundEffect.Effect = Game.Content.Load<Effect>(
-                score.Match.Random.NextElement(BackgroundEffect.EffectNames)
-            );
+            _background.NextEffect();
             _background.BackgroundEffect.Formula.Frequency = score.Level switch
             {
                 1 => 0.5f,

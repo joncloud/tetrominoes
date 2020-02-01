@@ -4,7 +4,7 @@ namespace Tetrominoes.Options
 {
     public interface IOptionService
     {
-        event Action<GameOptions> Updated;
+        event Action<GameOptions>? Updated;
 
         GameOptions Options { get; }
 

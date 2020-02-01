@@ -10,16 +10,23 @@ namespace Tetrominoes
         public MatchTetrominoes Tetrominoes { get; }
         public MatchController Controller { get; }
         public MatchScore Score { get; }
-        public Random Random { get; }
         public Match(Random random, IOptionService option)
+            : this(
+                  new RandomMatchCalculator(random),
+                  option
+            )
         {
+        }
+
+        public Match(IMatchCalculator calculator, IOptionService option)
+        {
+            if (calculator == default) throw new ArgumentNullException(nameof(calculator));
             if (option == default) throw new ArgumentNullException(nameof(option));
 
-            Random = random ?? throw new ArgumentNullException(nameof(random));
             Grid = new MatchGrid();
             Controller = new MatchController(this, option);
             Score = new MatchScore(this);
-            Tetrominoes = new MatchTetrominoes(random, this);
+            Tetrominoes = new MatchTetrominoes(calculator, this);
         }
 
         TimeSpan _drop;

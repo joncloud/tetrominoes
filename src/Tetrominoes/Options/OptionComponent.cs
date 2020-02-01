@@ -13,7 +13,7 @@ namespace Tetrominoes.Options
             Load();
         }
 
-        public event Action<GameOptions> Updated;
+        public event Action<GameOptions>? Updated;
 
         public GameOptions Options { get; private set; }
 
