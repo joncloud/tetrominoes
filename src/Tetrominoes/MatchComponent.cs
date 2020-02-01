@@ -341,7 +341,8 @@ namespace Tetrominoes
 #endif
 
             var state = _input.State;
-            if (state.Back == InputButtonState.Pressed)
+            if (_state != MatchState.Playing &&
+                state.Back == InputButtonState.Pressed)
             {
                 Enabled = Visible = false;
                 _menu.Show();
