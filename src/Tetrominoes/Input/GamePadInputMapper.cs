@@ -61,6 +61,6 @@ namespace Tetrominoes.Input
         }
 
         public override string ToString() =>
-            $"CONTROLLER {GamePadOptions.PlayerIndex.ToString().ToUpper()}";
+            $"Controller {GamePadOptions.PlayerIndex}";
     }
 }

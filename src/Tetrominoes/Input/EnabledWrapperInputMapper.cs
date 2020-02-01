@@ -27,5 +27,8 @@ namespace Tetrominoes.Input
             _enabled(_options)
                 ? _inner.Update(gameTime)
                 : InputConnection.Disconnected;
+
+        public override string ToString() =>
+            _inner.ToString() ?? "";
     }
 }

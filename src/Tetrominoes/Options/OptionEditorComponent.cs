@@ -48,6 +48,7 @@ namespace Tetrominoes.Options
         IMenuService _menu;
         IAudioService _audio;
         IOptionService _options;
+        IAlertService _alert;
         GraphicsDeviceManager _manager;
         public override void Initialize()
         {
@@ -55,6 +56,7 @@ namespace Tetrominoes.Options
             _menu = Game.Services.GetService<IMenuService>();
             _audio = Game.Services.GetService<IAudioService>();
             _options = Game.Services.GetService<IOptionService>();
+            _alert = Game.Services.GetService<IAlertService>();
             _manager = Game.Services.GetService<GraphicsDeviceManager>();
 
             base.Initialize();
@@ -576,6 +578,7 @@ namespace Tetrominoes.Options
 
                         Hide();
                         _menu.Show();
+                        _alert.Display("Options saved");
                     }
                     break;
 

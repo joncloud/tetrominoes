@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Tetrominoes.Audio;
+using Tetrominoes.Graphics;
 using Tetrominoes.Input;
 using Tetrominoes.Options;
 
@@ -58,6 +59,7 @@ namespace Tetrominoes.OpenGL
             OptionEditorComponent.AddTo(this);
             MenuComponent.AddTo(this);
             MatchComponent.AddTo(this);
+            AlertComponent.AddTo(this);
             base.Initialize();
         }
 

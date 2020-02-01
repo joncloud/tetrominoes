@@ -2,6 +2,7 @@
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Tetrominoes.Graphics;
 using Tetrominoes.Options;
 
 namespace Tetrominoes.Input
@@ -23,12 +24,12 @@ namespace Tetrominoes.Input
         }
 
         IOptionService _options;
-        //IAlertService _alertService;
+        IAlertService _alert;
         readonly List<IInputMapper> _enabled = new List<IInputMapper>();
         readonly List<IInputMapper> _disabled = new List<IInputMapper>();
         public override void Initialize()
         {
-            //_alertService = Game.Services.GetService<IAlertService>();
+            _alert = Game.Services.GetService<IAlertService>();
             _options = Game.Services.GetService<IOptionService>();
             _enabled.Add(
                 new KeyboardInputMapper(_options)
@@ -56,7 +57,7 @@ namespace Tetrominoes.Input
                     _enabled.RemoveAt(index);
                     _disabled.Add(mapper);
 
-                    //_alertService.Display($"{mapper} DISCONNECTED", default);
+                    _alert.Display($"{mapper} DISCONNECTED");
                 }
                 else
                 {
@@ -74,7 +75,7 @@ namespace Tetrominoes.Input
                     _disabled.RemoveAt(index);
                     _enabled.Add(mapper);
 
-                    //_alertService.Display($"{mapper} CONNECTED", default);
+                    _alert.Display($"{mapper} CONNECTED");
                 }
             }
 

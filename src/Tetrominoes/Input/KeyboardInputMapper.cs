@@ -50,6 +50,6 @@ namespace Tetrominoes.Input
             InputConnection.Connected;
 
         public override string ToString() =>
-            "KEYBOARD";
+            "Keyboard";
     }
 }
