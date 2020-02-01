@@ -358,6 +358,14 @@ namespace Tetrominoes.Options
                         [GamePadButtonTypes.DPadUp] = "À",
                         [GamePadButtonTypes.TriggersLeft] = "Ë",
                         [GamePadButtonTypes.TriggersRight] = "Ì",
+                        [GamePadButtonTypes.ThumbSticksLeftDown] = "ØÁ",
+                        [GamePadButtonTypes.ThumbSticksLeftLeft] = "ØÂ",
+                        [GamePadButtonTypes.ThumbSticksLeftRight] = "ØÃ",
+                        [GamePadButtonTypes.ThumbSticksLeftUp] = "ØÀ",
+                        [GamePadButtonTypes.ThumbSticksRightDown] = "ÙÁ",
+                        [GamePadButtonTypes.ThumbSticksRightLeft] = "ÙÂ",
+                        [GamePadButtonTypes.ThumbSticksRightRight] = "ÙÃ",
+                        [GamePadButtonTypes.ThumbSticksRightUp] = "ÙÀ",
                     };
 
                 public void Commit()

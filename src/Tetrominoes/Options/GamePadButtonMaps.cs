@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 
@@ -26,8 +27,34 @@ namespace Tetrominoes.Options
                 GamePadButtonTypes.DPadRight => DPad.Right,
                 GamePadButtonTypes.TriggersLeft => Triggers.Left,
                 GamePadButtonTypes.TriggersRight => Triggers.Right,
+                GamePadButtonTypes.ThumbSticksLeftUp => ThumbSticks.Left.Up,
+                GamePadButtonTypes.ThumbSticksLeftDown => ThumbSticks.Left.Down,
+                GamePadButtonTypes.ThumbSticksLeftLeft => ThumbSticks.Left.Left,
+                GamePadButtonTypes.ThumbSticksLeftRight => ThumbSticks.Left.Right,
+                GamePadButtonTypes.ThumbSticksRightUp => ThumbSticks.Right.Up,
+                GamePadButtonTypes.ThumbSticksRightDown => ThumbSticks.Right.Down,
+                GamePadButtonTypes.ThumbSticksRightLeft => ThumbSticks.Right.Left,
+                GamePadButtonTypes.ThumbSticksRightRight => ThumbSticks.Right.Right,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
+        }
+
+        public class ThumbStick
+        {
+            readonly Func<GamePadState, Vector2> _fn;
+            public ThumbStick(Func<GamePadState, Vector2> fn) =>
+                _fn = fn ?? throw new ArgumentNullException(nameof(fn));
+
+            public ButtonState Up(in GamePadState state) => _fn(state).Y < -0.1f ? ButtonState.Pressed : ButtonState.Released;
+            public ButtonState Down(in GamePadState state) => _fn(state).Y > 0.1f ? ButtonState.Pressed : ButtonState.Released;
+            public ButtonState Left(in GamePadState state) => _fn(state).X < -0.1f ? ButtonState.Pressed : ButtonState.Released;
+            public ButtonState Right(in GamePadState state) => _fn(state).X > 0.1f ? ButtonState.Pressed : ButtonState.Released;
+        }
+
+        public static class ThumbSticks
+        {
+            public static ThumbStick Left { get; } = new ThumbStick(s => s.ThumbSticks.Left);
+            public static ThumbStick Right { get; } = new ThumbStick(s => s.ThumbSticks.Right);
         }
 
         public static class Triggers
