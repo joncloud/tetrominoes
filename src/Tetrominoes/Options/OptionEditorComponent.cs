@@ -506,6 +506,13 @@ namespace Tetrominoes.Options
 
         void HandleOptionValue(InputState state)
         {
+            if (state.Back == InputButtonState.Pressed)
+            {
+                Hide();
+                _menu.Show();
+                return;
+            }
+
             var offset = 0;
             if (state.Left == InputButtonState.Pressed ||
                 state.RotateLeft == InputButtonState.Pressed)
