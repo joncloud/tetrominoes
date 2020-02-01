@@ -9,30 +9,36 @@ namespace Tetrominoes.Options
     {
         public GameOptions()
         {
+            Gameplay = new GameGameplayOptions();
             Graphics = new GameGraphicsOptions();
             Input = new GameInputOptions();
             Audio = new GameAudioOptions();
         }
 
         public GameOptions(
+            GameGameplayOptions gameplay,
             GameGraphicsOptions graphics,
             GameInputOptions input,
             GameAudioOptions audio
         )
         {
+            Gameplay = gameplay ?? throw new ArgumentNullException(nameof(gameplay));
             Graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
             Input = input ?? throw new ArgumentNullException(nameof(input));
             Audio = audio ?? throw new ArgumentNullException(nameof(audio));
         }
 
+        [TomlMember(Key = "gameplay")]
+        public GameGameplayOptions Gameplay { get; }
+
         [TomlMember(Key = "graphics")]
-        public GameGraphicsOptions Graphics { get; set; }
+        public GameGraphicsOptions Graphics { get; }
 
         [TomlMember(Key = "input")]
-        public GameInputOptions Input { get; set; }
+        public GameInputOptions Input { get; }
 
         [TomlMember(Key = "audio")]
-        public GameAudioOptions Audio { get; set; }
+        public GameAudioOptions Audio { get; }
 
         static string GetTomlPath()
         {
@@ -67,6 +73,7 @@ namespace Tetrominoes.Options
                 var table = Toml.ReadStream(source);
 
                 return new GameOptions(
+                    GameGameplayOptions.FromToml(table),
                     GameGraphicsOptions.FromToml(table),
                     GameInputOptions.FromToml(table),
                     GameAudioOptions.FromToml(table)

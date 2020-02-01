@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
+using Tetrominoes.Options;
 
 namespace Tetrominoes
 {
@@ -10,11 +11,13 @@ namespace Tetrominoes
         public MatchController Controller { get; }
         public MatchScore Score { get; }
         public Random Random { get; }
-        public Match(Random random)
+        public Match(Random random, IOptionService option)
         {
+            if (option == default) throw new ArgumentNullException(nameof(option));
+
             Random = random ?? throw new ArgumentNullException(nameof(random));
             Grid = new MatchGrid();
-            Controller = new MatchController(this);
+            Controller = new MatchController(this, option);
             Score = new MatchScore(this);
             Tetrominoes = new MatchTetrominoes(random, this);
         }

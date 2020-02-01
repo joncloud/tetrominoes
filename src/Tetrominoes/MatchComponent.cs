@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tetrominoes.Audio;
 using Tetrominoes.Input;
+using Tetrominoes.Options;
 
 namespace Tetrominoes
 {
@@ -31,12 +32,15 @@ namespace Tetrominoes
         IAudioService _audio;
         IMenuService _menu;
         IBackgroundService _background;
+        IOptionService _option;
         public override void Initialize()
         {
             _input = Game.Services.GetService<IInputService>();
             _audio = Game.Services.GetService<IAudioService>();
             _menu = Game.Services.GetService<IMenuService>();
             _background = Game.Services.GetService<IBackgroundService>();
+            _option = Game.Services.GetService<IOptionService>();
+
             base.Initialize();
         }
 
@@ -50,10 +54,11 @@ namespace Tetrominoes
 
             _match = new Match(
 #if DEBUG
-                new Random(1)
+                new Random(1),
 #else
-                new Random()
+                new Random(),
 #endif
+                _option
             );
             _match.Score.LevelChanged += Score_LevelChanged;
             _match.Score.PieceLocked += Score_PieceLocked;
@@ -498,11 +503,15 @@ namespace Tetrominoes
         {
             var tetrominoes = _match.Tetrominoes;
             var tetrominoColor = _colors[(int)tetrominoes.Current.Piece];
-            var shadowColor = new Color(tetrominoColor, 0.5f);
-            _tetrominoRenderer.Draw(
-                tetrominoes.Shadow,
-                shadowColor
-            );
+
+            if (_option.Options.Gameplay.ShadowPiece)
+            {
+                var shadowColor = new Color(tetrominoColor, 0.5f);
+                _tetrominoRenderer.Draw(
+                    tetrominoes.Shadow,
+                    shadowColor
+                );
+            }
 
             _tetrominoRenderer.Draw(
                 tetrominoes.Current,
@@ -542,6 +551,8 @@ namespace Tetrominoes
 
         void RenderSwapPiece(int scale, int totalWidth, int gridWidth)
         {
+            if (!_option.Options.Gameplay.SwapPiece) return;
+
             var tx = Matrix.CreateTranslation((totalWidth - gridWidth) / 2, 0, 0)
                 * Matrix.CreateTranslation(gridWidth + 48, 128, 0)
                 * Matrix.CreateScale(scale, scale, 0);

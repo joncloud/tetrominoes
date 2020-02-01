@@ -75,6 +75,7 @@ namespace Tetrominoes.Options
         class OptionModel
         {
             readonly GameOptions _root;
+            readonly OptionGameplayModel _gameplay;
             readonly OptionGraphicsModel _graphics;
             readonly OptionAudioModel _audio;
             readonly OptionInputKeyboardModel _keyboard;
@@ -85,6 +86,7 @@ namespace Tetrominoes.Options
             public OptionModel(GameOptions options)
             {
                 _root = options ?? throw new ArgumentNullException(nameof(options));
+                _gameplay = new OptionGameplayModel(options.Gameplay);
                 _graphics = new OptionGraphicsModel(options.Graphics);
                 _audio = new OptionAudioModel(options.Audio);
                 _keyboard = new OptionInputKeyboardModel(options.Input.Keyboard);
@@ -94,6 +96,9 @@ namespace Tetrominoes.Options
                 {
                     new OptionHeader("Back"),
                     new OptionHeader("Save"),
+                    _gameplay.Header,
+                    _gameplay.ShadowPiece,
+                    _gameplay.SwapPiece,
                     _graphics.Header,
                     _graphics.Resolution,
                     _graphics.Fullscreen,
@@ -130,10 +135,33 @@ namespace Tetrominoes.Options
 
             public void Commit()
             {
+                _gameplay.Commit();
                 _graphics.Commit();
                 _audio.Commit();
                 _keyboard.Commit();
                 _gamePad.Commit();
+            }
+
+            class OptionGameplayModel
+            {
+                readonly GameGameplayOptions _options;
+                public OptionHeader Header { get; }
+                public OptionToggle ShadowPiece { get; }
+                public OptionToggle SwapPiece { get; }
+
+                public OptionGameplayModel(GameGameplayOptions options)
+                {
+                    _options = options ?? throw new ArgumentNullException(nameof(options));
+                    Header = new OptionHeader("Gameplay");
+                    ShadowPiece = new OptionToggle(" Shadow Piece") { SelectedValue = options.ShadowPiece };
+                    SwapPiece = new OptionToggle(" Swap Piece") { SelectedValue = options.SwapPiece };
+                }
+
+                public void Commit()
+                {
+                    _options.ShadowPiece = ShadowPiece.SelectedValue;
+                    _options.SwapPiece = SwapPiece.SelectedValue;
+                }
             }
 
             class OptionGraphicsModel

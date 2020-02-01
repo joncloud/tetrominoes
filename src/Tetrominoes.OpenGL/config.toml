@@ -1,4 +1,8 @@
-﻿[graphics]
+﻿[gameplay]
+shadow_piece = true
+swap_piece = true
+
+[graphics]
 width = 1920
 height = 1080
 fullscreen = true
