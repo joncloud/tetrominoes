@@ -13,7 +13,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: '3.1.x'
 
     - name: Set app version
       run: powershell.exe -Command "./Set-AppVersion.ps1 -BuildDate ((Get-Date).ToString('s')) -GitRef '${{ github.ref }}'"
