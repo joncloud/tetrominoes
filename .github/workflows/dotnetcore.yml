@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -31,7 +31,7 @@ jobs:
       working-directory: src/Tetrominoes.OpenGL
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v2
       with:
         name: Tetrominoes.OpenGL
         path: src/Tetrominoes.OpenGL/bin/Release/netcoreapp3.1
